@@ -89,7 +89,7 @@ noise_variance_BLUE            = 0;
 % folder, and change line 204 from owl.frequency(10) to 
 % owl.frequency(serverRate):
 
-baseRate                       = 0.1;      % 20 Hz
+baseRate                       = 1/4;      % 4 Hz
 
 %% Set the frequency that the data is being sent up from the PhaseSpace:
 
@@ -98,7 +98,7 @@ baseRate                       = 0.1;      % 20 Hz
 % setting this equal to or higher then the baseRate causes the data to
 % buffer in the UDP send.
 
-serverRate                     = 0.2;       % 10 Hz
+serverRate                     = 1/2;       % 2 Hz
 
 %% Set the duration of each major phase in the experiment, in seconds:
 

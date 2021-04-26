@@ -1,9 +1,9 @@
 % Plot the fft of the measured PhaseSpace position signal
 
-X = rt_dataPacket(8481:end,5);
+X = rt_dataPacket(50:end,68);
 X = downsample(X, 2);
 
-Fs = 240;            % Sampling frequency                    
+Fs = 5;            % Sampling frequency                    
 T = 1/Fs;             % Sampling period       
 L = size(X,1);             % Length of signal
 t = (0:L-1)*T;        % Time vector
