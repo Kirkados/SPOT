@@ -89,7 +89,7 @@ noise_variance_BLUE            = 0;
 % folder, and change line 204 from owl.frequency(10) to 
 % owl.frequency(serverRate):
 
-baseRate                       = 1/4;      % 4 Hz
+baseRate                       = 1/10;      % 4 Hz
 
 %% Set the frequency that the data is being sent up from the PhaseSpace:
 
