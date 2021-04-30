@@ -102,7 +102,7 @@ serverRate                     = 1/2;       % 2 Hz
 
 %% Set the duration of each major phase in the experiment, in seconds:
 
-Phase0_Duration                = 10;        % [s]
+Phase0_Duration                = 8;        % [s]
 Phase1_Duration                = 5;         % [s]
 Phase2_Duration                = 25;        % [s]
 Phase3_Duration                = 177;        % [s]
@@ -114,7 +114,7 @@ Phase5_Duration                = 5;         % [s]
 % diagram. The total duration of the sub-phases must equal the length of
 % the Phase3_Duration.
 
-Phase3_SubPhase1_Duration      = 1;        % [s]
+Phase3_SubPhase1_Duration      = 3;        % [s]
 Phase3_SubPhase2_Duration      = 1;        % [s]
 Phase3_SubPhase3_Duration      = 30;        % [s]
 Phase3_SubPhase4_Duration      = 145;       % [s]
