@@ -10,6 +10,7 @@
 clear;
 clc;
 close all force;
+addpath(genpath('../../Custom_Library'))
 
 warning('off','all')
 
@@ -61,8 +62,8 @@ Kd_xb                          = 5;
 Kp_yb                          = 2;
 Kd_yb                          = 5;
 
-Kp_tb                          = 0.1;
-Kd_tb                          = 0.4;
+Kp_tb                          = 0; % Set to 0 because Black's attitude oscillates 
+Kd_tb                          = 0; % Set to 0 because Black's attitude oscillates 
 
 % Initialize the PID gains for the BLUE platform:
 
@@ -185,15 +186,15 @@ Pos_J3  = [primal.time'+42,primal.states(6,:)'];
 
 
 drop_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
-drop_states_BLACK         = [1.36947387695313,1.22175756835938,-0.0161599479615688];  % [m; m; rad]
+drop_states_BLACK         = [ 0.6; 0.6; -pi/2];  % [m; m; rad]
 drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
 init_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
-init_states_BLACK         = [ xLength/2; yLength/2; 0];      % [m; m; rad]
+init_states_BLACK         = [ 0.6; 0.6; -pi/2];      % [m; m; rad]
 init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
 home_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
-home_states_BLACK         = [ xLength/2; yLength/2; 0];  % [m; m; rad]
+home_states_BLACK         = [ 0.6; 0.6; -pi/2];  % [m; m; rad]
 home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
                                               
 %% Start the graphical user interface:
