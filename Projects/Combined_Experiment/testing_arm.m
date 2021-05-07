@@ -168,25 +168,15 @@ else
     fprintf('Dynamixel has been successfully connected \n');
 end
 
-acceleration = 1;
+acceleration = - 2;
 counter = 0;
 goal_velocities = 0;
 while counter < 20
     
-    goal_velocities = goal_velocities + acceleration * 0.5;
-    
-    % Write goal velocity
-    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_GOAL_VELOCITY, typecast(int32(goal_velocities), 'uint32'));
-    dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
-    dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
-    if dxl_comm_result ~= COMM_SUCCESS
-        fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
-    elseif dxl_error ~= 0
-        fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
-    end
-
     % Read present position
     dxl_present_position = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRESENT_POSITION);
+    dxl_present_position = mod(dxl_present_position, 4096); % wrap rotation
+    dxl_present_position = dxl_present_position * 0.088; % convert to degrees
     dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
     dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
     if dxl_comm_result ~= COMM_SUCCESS
@@ -204,8 +194,26 @@ while counter < 20
     elseif dxl_error ~= 0
         fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
     end
-
-    fprintf('[ID:%03d] GoalVel:%03d  PresPos:%03d   PresVel:%03d\n', DXL_ID, goal_velocities, typecast(uint32(dxl_present_position), 'int32'), typecast(uint32(dxl_present_velocity), 'int32'));    
+    
+    % Calculate goal velocity
+    goal_velocities = goal_velocities + acceleration * 0.5;
+    
+    % Check if the limits are passed
+    if (dxl_present_position >= 265 && goal_velocities > 0 ) || (dxl_present_position < 95 && goal_velocities < 0)
+        goal_velocities = 0;
+    end
+    
+    % Write goal velocity
+    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_GOAL_VELOCITY, typecast(int32(goal_velocities), 'uint32'));
+    dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
+    dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
+    if dxl_comm_result ~= COMM_SUCCESS
+        fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
+    elseif dxl_error ~= 0
+        fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
+    end
+    
+    fprintf('[ID:%03d] GoalVel:%03d  PresPos:%03d deg   PresVel:%03d\n', DXL_ID, goal_velocities, typecast(uint32(dxl_present_position), 'int32'), typecast(uint32(dxl_present_velocity), 'int32'));    
     
     pause(0.5)
     counter = counter + 1;
