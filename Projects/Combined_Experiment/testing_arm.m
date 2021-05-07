@@ -52,9 +52,14 @@ if ~libisloaded(lib_name)
 end
 
 % Control table address
-ADDR_PRO_TORQUE_ENABLE       = 64;         % Control table address is different in Dynamixel model
-ADDR_PRO_GOAL_POSITION       = 116;
-ADDR_PRO_PRESENT_POSITION    = 132;
+ADDR_TORQUE_ENABLE       = 64;         % Control table address is different in Dynamixel model
+ADDR_PRESENT_POSITION    = 132;
+ADDR_PRESENT_VELOCITY = 128;
+ADDR_DRIVE_MODE = 10;
+ADDR_OPERATING_MODE = 11;
+ADDR_VELOCITY_LIMIT = 44;
+ADDR_PROFILE_ACCELERATION = 108;
+ADDR_GOAL_VELOCITY = 104;
 
 % Protocol version
 PROTOCOL_VERSION            = 2.0;          % See which protocol version is used in the Dynamixel
@@ -67,9 +72,6 @@ DEVICENAME                  = 'COM3';       % Check which port is being used on 
 
 TORQUE_ENABLE               = 1;            % Value for enabling the torque
 TORQUE_DISABLE              = 0;            % Value for disabling the torque
-DXL_MINIMUM_POSITION_VALUE  = 0;      % Dynamixel will rotate between this value
-DXL_MAXIMUM_POSITION_VALUE  = 2000;       % and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
-DXL_MOVING_STATUS_THRESHOLD = 20;           % Dynamixel moving status threshold
 
 ESC_CHARACTER               = 'e';          % Key for escaping loop
 
@@ -86,7 +88,6 @@ packetHandler();
 
 index = 1;
 dxl_comm_result = COMM_TX_FAIL;           % Communication result
-dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE DXL_MAXIMUM_POSITION_VALUE];         % Goal position
 
 dxl_error = 0;                              % Dynamixel error
 dxl_present_position = 0;                   % Present position
@@ -113,9 +114,50 @@ else
     return;
 end
 
+% Set the Operating Mode
+write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_OPERATING_MODE, 1);
+dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
+dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
+if dxl_comm_result ~= COMM_SUCCESS
+    fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
+elseif dxl_error ~= 0
+    fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
+end
+
+% Set the Drive Mode (time-based accelerations)
+write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_DRIVE_MODE, 1);
+dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
+dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
+if dxl_comm_result ~= COMM_SUCCESS
+    fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
+elseif dxl_error ~= 0
+    fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
+end
+
+% Set the Profile acceleration time to 500 ms (a block in serverRate in Simulink)
+write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PROFILE_ACCELERATION, typecast(int32(500), 'uint32'));
+dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
+dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
+if dxl_comm_result ~= COMM_SUCCESS
+    fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
+elseif dxl_error ~= 0
+    fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
+end
+
+% Set the Velocity limit to 5 rev/min (pi/6 rad/s). This corresponds to '22'
+write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_VELOCITY_LIMIT, typecast(int32(22), 'uint32'));
+dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
+dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
+if dxl_comm_result ~= COMM_SUCCESS
+    fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
+elseif dxl_error ~= 0
+    fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
+end
+
+
 
 % Enable Dynamixel Torque
-write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
+write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
 if dxl_comm_result ~= COMM_SUCCESS
@@ -126,14 +168,15 @@ else
     fprintf('Dynamixel has been successfully connected \n');
 end
 
-
-while 1
-    if input('Press any key to continue! (or input e to quit!)\n', 's') == ESC_CHARACTER
-        break;
-    end
-
-    % Write goal position
-    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_GOAL_POSITION, typecast(int32(dxl_goal_position(index)), 'uint32'));
+acceleration = 1;
+counter = 0;
+goal_velocities = 0;
+while counter < 20
+    
+    goal_velocities = goal_velocities + acceleration * 0.5;
+    
+    % Write goal velocity
+    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_GOAL_VELOCITY, typecast(int32(goal_velocities), 'uint32'));
     dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
     dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
     if dxl_comm_result ~= COMM_SUCCESS
@@ -142,35 +185,35 @@ while 1
         fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
     end
 
-    while 1
-        % Read present position
-        dxl_present_position = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_PRESENT_POSITION);
-        dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
-        dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
-        if dxl_comm_result ~= COMM_SUCCESS
-            fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
-        elseif dxl_error ~= 0
-            fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
-        end
-
-        fprintf('[ID:%03d] GoalPos:%03d  PresPos:%03d\n', DXL_ID, dxl_goal_position(index), typecast(uint32(dxl_present_position), 'int32'));
-
-        if ~(abs(dxl_goal_position(index) - typecast(uint32(dxl_present_position), 'int32')) > DXL_MOVING_STATUS_THRESHOLD)
-            break;
-        end
+    % Read present position
+    dxl_present_position = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRESENT_POSITION);
+    dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
+    dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
+    if dxl_comm_result ~= COMM_SUCCESS
+        fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
+    elseif dxl_error ~= 0
+        fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
+    end
+    
+    % Read present velocity
+    dxl_present_velocity = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRESENT_VELOCITY);
+    dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
+    dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
+    if dxl_comm_result ~= COMM_SUCCESS
+        fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
+    elseif dxl_error ~= 0
+        fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
     end
 
-    % Change goal position
-    if index == 1
-        index = 2;
-    else
-        index = 1;
-    end
+    fprintf('[ID:%03d] GoalVel:%03d  PresPos:%03d   PresVel:%03d\n', DXL_ID, goal_velocities, typecast(uint32(dxl_present_position), 'int32'), typecast(uint32(dxl_present_velocity), 'int32'));    
+    
+    pause(0.5)
+    counter = counter + 1;
 end
 
 
 % Disable Dynamixel Torque
-write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
+write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
 if dxl_comm_result ~= COMM_SUCCESS
