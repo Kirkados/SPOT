@@ -476,6 +476,77 @@ void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, doubl
     groupBulkWrite.clearParam();
 }
 
+void command_dynamixel_speed_acceleration(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD )
+{
+    // Define the transmission failure code
+    int dxl_comm_result   = COMM_TX_FAIL;
+    bool dxl_addparam_result = false;
+    uint8_t param_goal_speed_1[4];
+    uint8_t param_goal_speed_2[4];
+    uint8_t param_goal_speed_3[4];
+
+    double JOINT1_SPD_RPM = JOINT1_SPD_RAD*9.549296585513702;
+    double JOINT2_SPD_RPM = JOINT2_SPD_RAD*9.549296585513702;
+    double JOINT3_SPD_RPM = JOINT3_SPD_RAD*9.549296585513702;
+    double JOINT1_SPD_BITS;
+    double JOINT2_SPD_BITS;
+    double JOINT3_SPD_BITS;
+    
+    if (JOINT1_SPD_RPM <= 0)
+    {
+        JOINT1_SPD_BITS = nearbyint(-8.7721*JOINT1_SPD_RPM + 1024);
+    }
+    if (JOINT2_SPD_RPM <= 0)
+    {
+        JOINT2_SPD_BITS = nearbyint(-8.7721*JOINT2_SPD_RPM + 1024);
+    }
+    if (JOINT3_SPD_RPM <= 0)
+    {
+        JOINT3_SPD_BITS = nearbyint(-8.7721*JOINT3_SPD_RPM + 1024);
+    }
+    
+    if (JOINT1_SPD_RPM > 0)
+    {
+        JOINT1_SPD_BITS = nearbyint(8.7721*JOINT1_SPD_RPM);
+    }
+    if (JOINT2_SPD_RPM > 0)
+    {
+        JOINT2_SPD_BITS = nearbyint(8.7721*JOINT2_SPD_RPM);
+    }
+    if (JOINT3_SPD_RPM > 0)
+    {
+        JOINT3_SPD_BITS = nearbyint(8.7721*JOINT3_SPD_RPM);
+    }
+ 
+    
+    // Allocate goal position value into byte array
+    param_goal_speed_1[0] = DXL_LOBYTE(DXL_LOWORD(JOINT1_SPD_BITS));
+    param_goal_speed_1[1] = DXL_HIBYTE(DXL_LOWORD(JOINT1_SPD_BITS));
+    param_goal_speed_1[2] = DXL_LOBYTE(DXL_HIWORD(JOINT1_SPD_BITS));
+    param_goal_speed_1[3] = DXL_HIBYTE(DXL_HIWORD(JOINT1_SPD_BITS));
+    
+    param_goal_speed_2[0] = DXL_LOBYTE(DXL_LOWORD(JOINT2_SPD_BITS));
+    param_goal_speed_2[1] = DXL_HIBYTE(DXL_LOWORD(JOINT2_SPD_BITS));
+    param_goal_speed_2[2] = DXL_LOBYTE(DXL_HIWORD(JOINT2_SPD_BITS));
+    param_goal_speed_2[3] = DXL_HIBYTE(DXL_HIWORD(JOINT2_SPD_BITS));
+    
+    param_goal_speed_3[0] = DXL_LOBYTE(DXL_LOWORD(JOINT3_SPD_BITS));
+    param_goal_speed_3[1] = DXL_HIBYTE(DXL_LOWORD(JOINT3_SPD_BITS));
+    param_goal_speed_3[2] = DXL_LOBYTE(DXL_HIWORD(JOINT3_SPD_BITS));
+    param_goal_speed_3[3] = DXL_HIBYTE(DXL_HIWORD(JOINT3_SPD_BITS));
+    
+    // Initialize the dxl_error variable
+    uint8_t dxl_error = 0;
+    
+    // Send the raw (0->4096) initial position value.
+    dxl_addparam_result = groupBulkWrite.addParam(1, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_1);
+    dxl_addparam_result = groupBulkWrite.addParam(2, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_2);
+    dxl_addparam_result = groupBulkWrite.addParam(3, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_3);
+    
+    dxl_comm_result = groupBulkWrite.txPacket();
+    groupBulkWrite.clearParam();
+}
+
 void command_dynamixel_PWM(double JOINT1_PWM, double JOINT2_PWM, double JOINT3_PWM )
 {
     
