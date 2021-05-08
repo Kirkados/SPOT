@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'DynamixelLibrary_Prototyping'. 
 ## 
 ## Makefile     : DynamixelLibrary_Prototyping.mk
-## Generated on : Sat May 08 16:54:36 2021
+## Generated on : Sat May 08 17:03:37 2021
 ## MATLAB Coder version: 5.0 (R2020a)
 ## 
 ## Build Info:
@@ -228,7 +228,7 @@ SYSTEM_LIBS =
 # C Compiler
 #---------------
 
-CFLAGS_SKIPFORSIL =   -fpermissive -fpermissive
+CFLAGS_SKIPFORSIL =   -fpermissive
 CFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CFLAGS += $(CFLAGS_SKIPFORSIL) $(CFLAGS_BASIC)
@@ -253,7 +253,7 @@ SHAREDLIB_LDFLAGS += $(SHAREDLIB_LDFLAGS_SKIPFORSIL)
 # C++ Compiler
 #-----------------
 
-CPPFLAGS_SKIPFORSIL =   -fpermissive -fpermissive
+CPPFLAGS_SKIPFORSIL =   -fpermissive
 CPPFLAGS_BASIC = $(DEFINES) $(INCLUDES)
 
 CPPFLAGS += $(CPPFLAGS_SKIPFORSIL) $(CPPFLAGS_BASIC)

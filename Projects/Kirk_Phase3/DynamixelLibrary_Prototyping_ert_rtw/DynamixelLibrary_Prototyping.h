@@ -3,9 +3,9 @@
 //
 //  Code generation for model "DynamixelLibrary_Prototyping".
 //
-//  Model version              : 1.136
+//  Model version              : 1.137
 //  Simulink Coder version : 9.3 (R2020a) 18-Nov-2019
-//  C++ source code generated on : Sat May  8 16:48:43 2021
+//  C++ source code generated on : Sat May  8 17:03:34 2021
 //
 //  Target selection: ert.tlc
 //  Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -119,7 +119,7 @@ struct P_DynamixelLibrary_Prototypin_T_ {
   real_T MATLABSystem1_VELOCITY_LIMIT; // Expression: 2000
                                           //  Referenced by: '<Root>/MATLAB System1'
 
-  real_T MATLABSystem1_ACCELERATION_TIME;// Expression: 5000
+  real_T MATLABSystem1_ACCELERATION_TIME;// Expression: 0
                                             //  Referenced by: '<Root>/MATLAB System1'
 
   real_T MATLABSystem4_SampleTime;     // Expression: 0.05

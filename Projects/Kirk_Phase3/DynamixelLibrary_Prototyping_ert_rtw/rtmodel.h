@@ -4,7 +4,7 @@
 //  Code generation for Simulink model "DynamixelLibrary_Prototyping".
 //
 //  Simulink Coder version                : 9.3 (R2020a) 18-Nov-2019
-//  C++ source code generated on : Sat May  8 16:48:43 2021
+//  C++ source code generated on : Sat May  8 17:03:34 2021
 //
 //  Note that the generated code is not dependent on this header file.
 //  The file is used in cojuction with the automatic build procedure.
