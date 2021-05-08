@@ -103,10 +103,10 @@ serverRate                     = 1/2;       % 2 Hz
 
 %% Set the duration of each major phase in the experiment, in seconds:
 
-Phase0_Duration                = 8;        % [s]
+Phase0_Duration                = 5;        % [s]
 Phase1_Duration                = 5;         % [s]
 Phase2_Duration                = 25;        % [s]
-Phase3_Duration                = 177;        % [s]
+Phase3_Duration                = 60;        % [s]
 Phase4_Duration                = 20;        % [s]
 Phase5_Duration                = 5;         % [s]
 
@@ -115,10 +115,10 @@ Phase5_Duration                = 5;         % [s]
 % diagram. The total duration of the sub-phases must equal the length of
 % the Phase3_Duration.
 
-Phase3_SubPhase1_Duration      = 3;        % [s]
-Phase3_SubPhase2_Duration      = 1;        % [s]
-Phase3_SubPhase3_Duration      = 30;        % [s]
-Phase3_SubPhase4_Duration      = 145;       % [s]
+Phase3_SubPhase1_Duration      = 0;        % [s]
+Phase3_SubPhase2_Duration      = 0;        % [s]
+Phase3_SubPhase3_Duration      = 0;        % [s]
+Phase3_SubPhase4_Duration      = 60;       % [s]
 
 % Determine the total experiment time from the durations:
 
@@ -176,11 +176,6 @@ thruster_dist2CG_RED          = [49.92;-78.08;70.46;-63.54;81.08;-50.42;57.44;-7
 thruster_dist2CG_BLACK        = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-55.94];
 thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-55.94];
 
-load('100NodeSolution_FreeFloating_DIDO.mat');
-
-Pos_J1  = [primal.time'+42,primal.states(4,:)'];
-Pos_J2  = [primal.time'+42,primal.states(5,:)'];
-Pos_J3  = [primal.time'+42,primal.states(6,:)'];
 
 %%  Set the drop, initial, and home positions for each platform:
 

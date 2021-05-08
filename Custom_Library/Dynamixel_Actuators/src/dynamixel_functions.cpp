@@ -11,7 +11,7 @@
 
 // Define the device name, baudrate, and protocol
 #define DEVICENAME                      "/dev/ttyUSB0"
-#define BAUDRATE                        1
+#define BAUDRATE                        1000000
 #define PROTOCOL_VERSION                2.0
 
 // Control table addresses                
@@ -48,6 +48,13 @@ dynamixel::GroupBulkWrite groupBulkWrite(portHandler, packetHandler);
 
 // Initialize GroupBulkRead instance
 dynamixel::GroupBulkRead groupBulkRead(portHandler, packetHandler);
+
+// Initialize Groupsyncread instance for Present Speed & Position [first 4 are speed, next 4 are position, luckily the values are right beside each other in the control table]
+dynamixel::GroupSyncRead groupSyncRead(portHandler, packetHandler, ADDR_MX_PRESENT_SPEED, 8);
+
+int32_t dxl1_present_position = 0;
+int32_t dxl2_present_position = 0;
+int32_t dxl3_present_position = 0;
 
 void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double D_GAIN, double MAX_POSITION,
                                            double MIN_POSITION, double VELOCITY_PROFILE, double ACCELERATION_PROFILE)
@@ -107,6 +114,9 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
 
     // Open COM port for serial communication with the actuators
     portHandler->openPort();
+	
+	// Set port baudrate
+	portHandler->setBaudRate(BAUDRATE);
 
     // Set up the motors for velocity control
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_OPERATING_MODE, 1, &dxl_error); // Velocity mode
@@ -354,35 +364,34 @@ void read_dynamixel_position(double* JOINT1_POS_RAD, double* JOINT2_POS_RAD, dou
     // Define the transmission failure code
     int dxl_comm_result   = COMM_TX_FAIL;
     bool dxl_addparam_result = false;
-    int32_t dxl1_present_position = 0;
-    int32_t dxl2_present_position = 0;
-    int32_t dxl3_present_position = 0;
     
+    /*
+	// Add parameters we want to read to the BulkRead
     dxl_addparam_result = groupBulkRead.addParam(1, ADDR_MX_PRESENT_POSITION, 4);
     dxl_addparam_result = groupBulkRead.addParam(2, ADDR_MX_PRESENT_POSITION, 4);
     dxl_addparam_result = groupBulkRead.addParam(3, ADDR_MX_PRESENT_POSITION, 4);
     
     dxl_comm_result = groupBulkRead.txRxPacket();
-    dxl1_present_position = groupBulkRead.getData(1, ADDR_MX_PRESENT_POSITION, 4);
-    dxl2_present_position = groupBulkRead.getData(2, ADDR_MX_PRESENT_POSITION, 4);
+    //dxl1_present_position = groupBulkRead.getData(1, ADDR_MX_PRESENT_POSITION, 4);
+    //dxl2_present_position = groupBulkRead.getData(2, ADDR_MX_PRESENT_POSITION, 4);
     dxl3_present_position = groupBulkRead.getData(3, ADDR_MX_PRESENT_POSITION, 4);
     
     if (dxl1_present_position == 0)
     {
-        *JOINT1_POS_RAD = dxl1_present_position;
+        //*JOINT1_POS_RAD = dxl1_present_position;
     }
     else
     {
-        *JOINT1_POS_RAD = 0.0015344*dxl1_present_position-3.14159;
+        //*JOINT1_POS_RAD = 0.001534363 *dxl1_present_position-3.14159;
     }
     
     if (dxl2_present_position == 0)
     {
-        *JOINT2_POS_RAD = dxl2_present_position;
+        //*JOINT2_POS_RAD = dxl2_present_position;
     }
     else
     {
-        *JOINT2_POS_RAD = 0.0015344*dxl2_present_position-3.14159;
+        //*JOINT2_POS_RAD = 0.001534363 *dxl2_present_position-3.14159;
     }
     
     if (dxl3_present_position == 0)
@@ -391,9 +400,49 @@ void read_dynamixel_position(double* JOINT1_POS_RAD, double* JOINT2_POS_RAD, dou
     }
     else
     {
-        *JOINT3_POS_RAD = 0.0015344*dxl3_present_position-3.14159;
+        *JOINT3_POS_RAD = 0.001534363*dxl3_present_position-3.14159;
     }
     groupBulkRead.clearParam();
+	*/
+	// Kirk trying the groupSyncRead
+	dxl_addparam_result = groupSyncRead.addParam(1);
+	//dxl_addparam_result = groupSyncRead.addParam(2);
+	//dxl_addparam_result = groupSyncRead.addParam(3);
+	
+	// Syncread present position
+	dxl_comm_result = groupSyncRead.txRxPacket();
+	
+	// Get Dynamixel#1 present position value
+	dxl2_present_position = groupSyncRead.getData(1, ADDR_MX_PRESENT_SPEED, 4);
+	*JOINT2_POS_RAD = dxl2_present_position;
+	
+    dxl1_present_position = groupSyncRead.getData(1, ADDR_MX_PRESENT_POSITION, 4);
+	*JOINT1_POS_RAD = dxl1_present_position;
+	
+	
+	
+	/*
+	// Kirk trying a single read instead of a bulk read to see if that works
+	// Read present position
+	int32_t dxl_present_position = 0;               // Present position
+	// Initialize the dxl_error variable
+    uint8_t dxl_error = 0;
+	
+    dxl_comm_result = packetHandler->read4ByteTxRx(portHandler, 1, ADDR_MX_PRESENT_POSITION, (uint32_t*)&dxl_present_position, &dxl_error);
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+      printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
+    }
+    else if (dxl_error != 0)
+    {
+      printf("%s\n", packetHandler->getRxPacketError(dxl_error));
+    }
+
+    //printf("[ID:%03d] GoalPos:%03d  PresPos:%03d\n", DXL_ID, dxl_goal_position[index], dxl_present_position);
+	*JOINT1_POS_RAD = dxl_present_position;
+	
+	*/
+	
 }
 
 void read_dynamixel_load(double* JOINT1_LOAD, double* JOINT2_LOAD, double* JOINT3_LOAD )
@@ -415,7 +464,7 @@ void read_dynamixel_load(double* JOINT1_LOAD, double* JOINT2_LOAD, double* JOINT
     groupBulkRead.clearParam();
 }
 
-void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD, double ACCELERATION_TIME)
+void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD)
 {
     // Define the transmission failure code
     int dxl_comm_result   = COMM_TX_FAIL;
