@@ -30,6 +30,7 @@
 #define ADDR_MX_MAX_POSITION            48
 #define ADDR_MX_MIN_POSITION            52
 #define ADDR_MX_VELOCITY_LIMIT          44
+#define ADDR_MX_VELOCITY_PROFILE        112
 #define ADDR_MX_CURRENT_LIMIT           38
 #define ADDR_MX_RETURN_DELAY            9
 #define ADDR_MX_DRIVE_MODE              10
@@ -49,7 +50,7 @@ dynamixel::GroupBulkWrite groupBulkWrite(portHandler, packetHandler);
 dynamixel::GroupBulkRead groupBulkRead(portHandler, packetHandler);
 
 void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double D_GAIN, double MAX_POSITION,
-                                           double MIN_POSITION, double VELOCITY_LIMIT)
+                                           double MIN_POSITION, double VELOCITY_PROFILE, double ACCELERATION_PROFILE)
 {
     
     // Define the transmission failure code
@@ -68,7 +69,8 @@ void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double 
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_POSITION_D_GAIN, D_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_MAX_POSITION, MAX_POSITION, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_MIN_POSITION, MIN_POSITION, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_PROFILE, VELOCITY_PROFILE, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_PROFILE, &dxl_error);
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
     
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 3, &dxl_error);
@@ -77,7 +79,8 @@ void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double 
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_POSITION_D_GAIN, D_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_MAX_POSITION, MAX_POSITION, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_MIN_POSITION, MIN_POSITION, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_PROFILE, VELOCITY_PROFILE, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_PROFILE, &dxl_error);
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
     
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_OPERATING_MODE, 3, &dxl_error);
@@ -86,7 +89,8 @@ void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double 
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_POSITION_D_GAIN, D_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_MAX_POSITION, MAX_POSITION, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_MIN_POSITION, MIN_POSITION, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_PROFILE, VELOCITY_PROFILE, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_PROFILE, &dxl_error);
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
 
 }
