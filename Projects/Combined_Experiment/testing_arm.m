@@ -168,7 +168,7 @@ else
     fprintf('Dynamixel has been successfully connected \n');
 end
 
-acceleration = - 2;
+acceleration = - 20;
 counter = 0;
 goal_velocities = 0;
 while counter < 20

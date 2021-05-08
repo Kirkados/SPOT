@@ -30,13 +30,13 @@
 #define ADDR_MX_MAX_POSITION            48
 #define ADDR_MX_MIN_POSITION            52
 #define ADDR_MX_VELOCITY_LIMIT          44
-#define ADDR_MX_ACCELERATION_LIMIT      40
 #define ADDR_MX_CURRENT_LIMIT           38
 #define ADDR_MX_RETURN_DELAY            9
 #define ADDR_MX_DRIVE_MODE              10
 #define ADDR_MX_OPERATING_MODE          11
 #define ADDR_MX_PWM_LIMIT               36
 #define ADDR_MX_GOAL_PWM                100
+#define ADDR_MX_PROFILE_ACCELERATION    108
 
 // Define the port handler and packet handler variables 
 dynamixel::PortHandler *portHandler = dynamixel::PortHandler::getPortHandler(DEVICENAME);
@@ -91,37 +91,43 @@ void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double 
 
 }
 
-void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VELOCITY_LIMIT )
+void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VELOCITY_LIMIT, int ACCELERATION_TIME)
 {
 
     // Define the transmission failure code
-    int dxl_comm_result      = COMM_TX_FAIL;
+    int dxl_comm_result = COMM_TX_FAIL;
     bool dxl_addparam_result = false;
-    
+
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
-    
+
     // Open COM port for serial communication with the actuators
     portHandler->openPort();
-    
-    // Set up the motors for position control
-    dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
-    dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
-    dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
-    dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
-    
-    dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
-    dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
-    dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
-    dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
-    
-    dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
-    dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
-    dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
-    dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
+
+    // Set up the motors for velocity control
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_OPERATING_MODE, 1, &dxl_error); // Velocity mode
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_TIME, &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
+    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
+
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_TIME, &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
+    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
+
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_TIME, &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
+    dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
+    dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
 }
 
 void initialize_dynamixel_PWM_control(double PWM_LIMIT)
@@ -405,7 +411,7 @@ void read_dynamixel_load(double* JOINT1_LOAD, double* JOINT2_LOAD, double* JOINT
     groupBulkRead.clearParam();
 }
 
-void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD )
+void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD, double ACCELERATION_TIME)
 {
     // Define the transmission failure code
     int dxl_comm_result   = COMM_TX_FAIL;
@@ -414,39 +420,18 @@ void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, doubl
     uint8_t param_goal_speed_2[4];
     uint8_t param_goal_speed_3[4];
 
+    // Convert to RPM
     double JOINT1_SPD_RPM = JOINT1_SPD_RAD*9.549296585513702;
     double JOINT2_SPD_RPM = JOINT2_SPD_RAD*9.549296585513702;
     double JOINT3_SPD_RPM = JOINT3_SPD_RAD*9.549296585513702;
+    
+    // Convert to bits (max speed of 234.27 corresponds to bit 1023)
     double JOINT1_SPD_BITS;
     double JOINT2_SPD_BITS;
     double JOINT3_SPD_BITS;
-    
-    if (JOINT1_SPD_RPM <= 0)
-    {
-        JOINT1_SPD_BITS = nearbyint(-8.7721*JOINT1_SPD_RPM + 1024);
-    }
-    if (JOINT2_SPD_RPM <= 0)
-    {
-        JOINT2_SPD_BITS = nearbyint(-8.7721*JOINT2_SPD_RPM + 1024);
-    }
-    if (JOINT3_SPD_RPM <= 0)
-    {
-        JOINT3_SPD_BITS = nearbyint(-8.7721*JOINT3_SPD_RPM + 1024);
-    }
-    
-    if (JOINT1_SPD_RPM > 0)
-    {
-        JOINT1_SPD_BITS = nearbyint(8.7721*JOINT1_SPD_RPM);
-    }
-    if (JOINT2_SPD_RPM > 0)
-    {
-        JOINT2_SPD_BITS = nearbyint(8.7721*JOINT2_SPD_RPM);
-    }
-    if (JOINT3_SPD_RPM > 0)
-    {
-        JOINT3_SPD_BITS = nearbyint(8.7721*JOINT3_SPD_RPM);
-    }
- 
+    JOINT1_SPD_BITS = nearbyint(JOINT1_SPD_RPM * 4.366756307);
+    JOINT2_SPD_BITS = nearbyint(JOINT2_SPD_RPM * 4.366756307);
+    JOINT3_SPD_BITS = nearbyint(JOINT3_SPD_RPM * 4.366756307);
     
     // Allocate goal position value into byte array
     param_goal_speed_1[0] = DXL_LOBYTE(DXL_LOWORD(JOINT1_SPD_BITS));
@@ -467,78 +452,7 @@ void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, doubl
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
     
-    // Send the raw (0->4096) initial position value.
-    dxl_addparam_result = groupBulkWrite.addParam(1, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_1);
-    dxl_addparam_result = groupBulkWrite.addParam(2, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_2);
-    dxl_addparam_result = groupBulkWrite.addParam(3, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_3);
-    
-    dxl_comm_result = groupBulkWrite.txPacket();
-    groupBulkWrite.clearParam();
-}
-
-void command_dynamixel_speed_acceleration(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD )
-{
-    // Define the transmission failure code
-    int dxl_comm_result   = COMM_TX_FAIL;
-    bool dxl_addparam_result = false;
-    uint8_t param_goal_speed_1[4];
-    uint8_t param_goal_speed_2[4];
-    uint8_t param_goal_speed_3[4];
-
-    double JOINT1_SPD_RPM = JOINT1_SPD_RAD*9.549296585513702;
-    double JOINT2_SPD_RPM = JOINT2_SPD_RAD*9.549296585513702;
-    double JOINT3_SPD_RPM = JOINT3_SPD_RAD*9.549296585513702;
-    double JOINT1_SPD_BITS;
-    double JOINT2_SPD_BITS;
-    double JOINT3_SPD_BITS;
-    
-    if (JOINT1_SPD_RPM <= 0)
-    {
-        JOINT1_SPD_BITS = nearbyint(-8.7721*JOINT1_SPD_RPM + 1024);
-    }
-    if (JOINT2_SPD_RPM <= 0)
-    {
-        JOINT2_SPD_BITS = nearbyint(-8.7721*JOINT2_SPD_RPM + 1024);
-    }
-    if (JOINT3_SPD_RPM <= 0)
-    {
-        JOINT3_SPD_BITS = nearbyint(-8.7721*JOINT3_SPD_RPM + 1024);
-    }
-    
-    if (JOINT1_SPD_RPM > 0)
-    {
-        JOINT1_SPD_BITS = nearbyint(8.7721*JOINT1_SPD_RPM);
-    }
-    if (JOINT2_SPD_RPM > 0)
-    {
-        JOINT2_SPD_BITS = nearbyint(8.7721*JOINT2_SPD_RPM);
-    }
-    if (JOINT3_SPD_RPM > 0)
-    {
-        JOINT3_SPD_BITS = nearbyint(8.7721*JOINT3_SPD_RPM);
-    }
- 
-    
-    // Allocate goal position value into byte array
-    param_goal_speed_1[0] = DXL_LOBYTE(DXL_LOWORD(JOINT1_SPD_BITS));
-    param_goal_speed_1[1] = DXL_HIBYTE(DXL_LOWORD(JOINT1_SPD_BITS));
-    param_goal_speed_1[2] = DXL_LOBYTE(DXL_HIWORD(JOINT1_SPD_BITS));
-    param_goal_speed_1[3] = DXL_HIBYTE(DXL_HIWORD(JOINT1_SPD_BITS));
-    
-    param_goal_speed_2[0] = DXL_LOBYTE(DXL_LOWORD(JOINT2_SPD_BITS));
-    param_goal_speed_2[1] = DXL_HIBYTE(DXL_LOWORD(JOINT2_SPD_BITS));
-    param_goal_speed_2[2] = DXL_LOBYTE(DXL_HIWORD(JOINT2_SPD_BITS));
-    param_goal_speed_2[3] = DXL_HIBYTE(DXL_HIWORD(JOINT2_SPD_BITS));
-    
-    param_goal_speed_3[0] = DXL_LOBYTE(DXL_LOWORD(JOINT3_SPD_BITS));
-    param_goal_speed_3[1] = DXL_HIBYTE(DXL_LOWORD(JOINT3_SPD_BITS));
-    param_goal_speed_3[2] = DXL_LOBYTE(DXL_HIWORD(JOINT3_SPD_BITS));
-    param_goal_speed_3[3] = DXL_HIBYTE(DXL_HIWORD(JOINT3_SPD_BITS));
-    
-    // Initialize the dxl_error variable
-    uint8_t dxl_error = 0;
-    
-    // Send the raw (0->4096) initial position value.
+    // Send the goal velocity command
     dxl_addparam_result = groupBulkWrite.addParam(1, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_1);
     dxl_addparam_result = groupBulkWrite.addParam(2, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_2);
     dxl_addparam_result = groupBulkWrite.addParam(3, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_3);
