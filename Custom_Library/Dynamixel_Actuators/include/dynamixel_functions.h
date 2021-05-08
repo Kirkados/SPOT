@@ -1,7 +1,7 @@
 #include "rtwtypes.h"
 
 void initialize_dynamixel_position_control(double, double, double, double, double, double);
-void initialize_dynamixel_speed_control(double, double, double);
+void initialize_dynamixel_speed_control(double, double, double, double);
 void initialize_dynamixel_PWM_control(double);
 void initialize_dynamixel_current_control(double);
 void initialize_dynamixel_special_control(double, double, double, double, double, double, double);

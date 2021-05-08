@@ -91,7 +91,7 @@ void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double 
 
 }
 
-void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VELOCITY_LIMIT, int ACCELERATION_TIME)
+void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VELOCITY_LIMIT, double ACCELERATION_TIME)
 {
 
     // Define the transmission failure code
@@ -107,7 +107,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
     // Set up the motors for velocity control
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_OPERATING_MODE, 1, &dxl_error); // Velocity mode
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
-    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_TIME, &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
@@ -115,7 +115,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
 
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
-    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_TIME, &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
@@ -123,7 +123,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
 
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
-    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_TIME, &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
