@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <tgmath.h> 
 
+// To do the modulus operator on doubles
+#include <cmath>
+
 // Include the dynamixel headers
 #include "dynamixel_sdk.h"
 #include "dynamixel_functions.h"
@@ -52,9 +55,6 @@ dynamixel::GroupBulkRead groupBulkRead(portHandler, packetHandler);
 // Initialize Groupsyncread instance for Present Speed & Position [first 4 are speed, next 4 are position, luckily the values are right beside each other in the control table]
 dynamixel::GroupSyncRead groupSyncRead(portHandler, packetHandler, ADDR_MX_PRESENT_SPEED, 8);
 
-int32_t dxl1_present_position = 0;
-int32_t dxl2_present_position = 0;
-int32_t dxl3_present_position = 0;
 
 void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double D_GAIN, double MAX_POSITION,
                                            double MIN_POSITION, double VELOCITY_PROFILE, double ACCELERATION_PROFILE)
@@ -107,7 +107,6 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
 
     // Define the transmission failure code
     int dxl_comm_result = COMM_TX_FAIL;
-    bool dxl_addparam_result = false;
 
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
@@ -126,7 +125,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
-
+        
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
@@ -142,6 +141,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
+
 }
 
 void initialize_dynamixel_PWM_control(double PWM_LIMIT)
@@ -358,91 +358,53 @@ void command_dynamixel_position(double JOINT1_POS_RAD, double JOINT2_POS_RAD, do
     
 }
 
-void read_dynamixel_position(double* JOINT1_POS_RAD, double* JOINT2_POS_RAD, double* JOINT3_POS_RAD )
+void read_dynamixel_position(double* JOINT1_POS_RAD, double* JOINT2_POS_RAD, double* JOINT3_POS_RAD, double* JOINT1_SPEED_RAD, double* JOINT2_SPEED_RAD, double* JOINT3_SPEED_RAD)
 {
     
     // Define the transmission failure code
     int dxl_comm_result   = COMM_TX_FAIL;
     bool dxl_addparam_result = false;
-    
-    /*
-	// Add parameters we want to read to the BulkRead
-    dxl_addparam_result = groupBulkRead.addParam(1, ADDR_MX_PRESENT_POSITION, 4);
-    dxl_addparam_result = groupBulkRead.addParam(2, ADDR_MX_PRESENT_POSITION, 4);
-    dxl_addparam_result = groupBulkRead.addParam(3, ADDR_MX_PRESENT_POSITION, 4);
-    
-    dxl_comm_result = groupBulkRead.txRxPacket();
-    //dxl1_present_position = groupBulkRead.getData(1, ADDR_MX_PRESENT_POSITION, 4);
-    //dxl2_present_position = groupBulkRead.getData(2, ADDR_MX_PRESENT_POSITION, 4);
-    dxl3_present_position = groupBulkRead.getData(3, ADDR_MX_PRESENT_POSITION, 4);
-    
-    if (dxl1_present_position == 0)
-    {
-        //*JOINT1_POS_RAD = dxl1_present_position;
-    }
-    else
-    {
-        //*JOINT1_POS_RAD = 0.001534363 *dxl1_present_position-3.14159;
-    }
-    
-    if (dxl2_present_position == 0)
-    {
-        //*JOINT2_POS_RAD = dxl2_present_position;
-    }
-    else
-    {
-        //*JOINT2_POS_RAD = 0.001534363 *dxl2_present_position-3.14159;
-    }
-    
-    if (dxl3_present_position == 0)
-    {
-        *JOINT3_POS_RAD = dxl3_present_position;
-    }
-    else
-    {
-        *JOINT3_POS_RAD = 0.001534363*dxl3_present_position-3.14159;
-    }
-    groupBulkRead.clearParam();
-	*/
-	// Kirk trying the groupSyncRead
-	dxl_addparam_result = groupSyncRead.addParam(1);
-	//dxl_addparam_result = groupSyncRead.addParam(2);
-	//dxl_addparam_result = groupSyncRead.addParam(3);
-	
-	// Syncread present position
+
+	// Syncread present position and velocity
 	dxl_comm_result = groupSyncRead.txRxPacket();
 	
-	// Get Dynamixel#1 present position value
-	dxl2_present_position = groupSyncRead.getData(1, ADDR_MX_PRESENT_SPEED, 4);
-	*JOINT2_POS_RAD = dxl2_present_position;
-	
-    dxl1_present_position = groupSyncRead.getData(1, ADDR_MX_PRESENT_POSITION, 4);
-	*JOINT1_POS_RAD = dxl1_present_position;
-	
-	
-	
-	/*
-	// Kirk trying a single read instead of a bulk read to see if that works
-	// Read present position
-	int32_t dxl_present_position = 0;               // Present position
-	// Initialize the dxl_error variable
-    uint8_t dxl_error = 0;
-	
-    dxl_comm_result = packetHandler->read4ByteTxRx(portHandler, 1, ADDR_MX_PRESENT_POSITION, (uint32_t*)&dxl_present_position, &dxl_error);
-    if (dxl_comm_result != COMM_SUCCESS)
-    {
-      printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
-    }
-    else if (dxl_error != 0)
-    {
-      printf("%s\n", packetHandler->getRxPacketError(dxl_error));
-    }
+    int32_t dxl1_present_position = 0;
+    int32_t dxl2_present_position = 0;
+    int32_t dxl3_present_position = 0;
+    int32_t dxl1_present_speed = 0;
+    int32_t dxl2_present_speed = 0;
+    int32_t dxl3_present_speed = 0;
 
-    //printf("[ID:%03d] GoalPos:%03d  PresPos:%03d\n", DXL_ID, dxl_goal_position[index], dxl_present_position);
-	*JOINT1_POS_RAD = dxl_present_position;
-	
-	*/
-	
+    // Add motors to the groupSyncRead (for read_dynamixel_position())
+    dxl_addparam_result = groupSyncRead.addParam(1);
+    dxl_addparam_result = groupSyncRead.addParam(2);
+    dxl_addparam_result = groupSyncRead.addParam(3);
+
+	// Get present position values
+    dxl1_present_position = groupSyncRead.getData(1, ADDR_MX_PRESENT_POSITION, 4);
+    dxl2_present_position = groupSyncRead.getData(2, ADDR_MX_PRESENT_POSITION, 4);
+    dxl3_present_position = groupSyncRead.getData(3, ADDR_MX_PRESENT_POSITION, 4);
+    double joint1_wrapped = std::fmod(0.001534363 * dxl1_present_position, 6.283185307179586); // Converting bits to rads, making 0 rad be when the arm joint is extended, and wrapping to [-pi,pi)
+    if (joint1_wrapped < 0)
+        joint1_wrapped += 6.283185307179586;
+    *JOINT1_POS_RAD = joint1_wrapped - 3.14159;
+    double joint2_wrapped = std::fmod(0.001534363 * dxl2_present_position, 6.283185307179586); // Converting bits to rads, making 0 rad be when the arm joint is extended, and wrapping to [-pi,pi)
+    if (joint2_wrapped < 0)
+        joint2_wrapped += 6.283185307179586;
+    *JOINT2_POS_RAD = joint2_wrapped - 3.14159;
+    double joint3_wrapped = std::fmod(0.001534363 * dxl3_present_position, 6.283185307179586); // Converting bits to rads, making 0 rad be when the arm joint is extended, and wrapping to [-pi,pi)
+    if (joint3_wrapped < 0)
+        joint3_wrapped += 6.283185307179586;
+    *JOINT3_POS_RAD = joint3_wrapped - 3.14159;
+
+    // Get present velocity values
+    dxl1_present_speed = groupSyncRead.getData(1, ADDR_MX_PRESENT_SPEED, 4);
+    dxl2_present_speed = groupSyncRead.getData(2, ADDR_MX_PRESENT_SPEED, 4);
+    dxl3_present_speed = groupSyncRead.getData(3, ADDR_MX_PRESENT_SPEED, 4);
+    *JOINT1_SPEED_RAD = 0.023981131017500 * dxl1_present_speed; // Converting bits to rad/s
+    *JOINT2_SPEED_RAD = 0.023981131017500 * dxl2_present_speed; // Converting bits to rad/s
+    *JOINT3_SPEED_RAD = 0.023981131017500 * dxl3_present_speed; // Converting bits to rad/s
+
 }
 
 void read_dynamixel_load(double* JOINT1_LOAD, double* JOINT2_LOAD, double* JOINT3_LOAD )

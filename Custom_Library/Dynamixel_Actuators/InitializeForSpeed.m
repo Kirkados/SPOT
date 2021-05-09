@@ -21,8 +21,8 @@ classdef InitializeForSpeed < matlab.System ...
         
         P_GAIN            = 100;
         I_GAIN            = 1920;
-        VELOCITY_LIMIT    = 0;
-        ACCELERATION_TIME = 0;
+        VELOCITY_LIMIT    = 1023;
+        ACCELERATION_TIME = 2000;
         
     end
     

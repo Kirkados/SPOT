@@ -12,6 +12,6 @@ void command_dynamixel_PWM(double, double, double);
 void command_dynamixel_current(int, int, int);
 void command_dynamixel_special(int, int, double);
 void command_dynamixel_arm_gripper_position(double, double, double, double, double, double, double);
-void read_dynamixel_position(double*, double*, double*);
+void read_dynamixel_position(double*, double*, double*, double*, double*, double*);
 void read_dynamixel_load(double*, double*, double*);
 void terminate_dynamixel();
