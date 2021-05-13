@@ -125,22 +125,26 @@ void stream_phasespace(double* XPOS_red, double* YPOS_red,
                         {
                             if (r->id == 0)
                             {
-                                *XPOS_red = r->pose[0];
-                                *YPOS_red = r->pose[1];
-                                *ATTI_red = atan2(2 * r->pose[4] * r->pose[5] 
+                                *XPOS_red = r->pose[0]; // Phasespace X = Lab X
+                                *YPOS_red = -r->pose[2]; // Phasespace Z = -Lab Y
+                                /**ATTI_red = atan2(2 * r->pose[4] * r->pose[5] 
                                         + 2 * r->pose[3] * r->pose[6], 
                                         2 * r->pose[3] * r->pose[3] - 1
-                                        + 2 * r->pose[4] * r->pose[4]);
+                                        + 2 * r->pose[4] * r->pose[4]);*/
+								*ATTI_red = atan2(2 * r->pose[4] * r->pose[6] + 2 * r->pose[3] * r->pose[5], 
+                                        1 - 2 * r->pose[4] * r->pose[4] - 2 * r->pose[5] * r->pose[5]); // Phasespace ThetaY = Lab ThetaZ -- For a YXZ Euler sequence, tan(thetaY) = R(1,3)/R(3,3)
                                 *current_time = event->time();
                             }
                             else if (r->id == 2)
                             {
-                                *XPOS_black = r->pose[0];
-                                *YPOS_black = r->pose[1];
-                                *ATTI_black = atan2(2 * r->pose[4] * r->pose[5] 
+                                *XPOS_black = r->pose[0]; // Phasespace X = Lab X
+                                *YPOS_black = -r->pose[2]; // Phasespace Z = -Lab Y
+                                /**ATTI_black = atan2(2 * r->pose[4] * r->pose[5] 
                                         + 2 * r->pose[3] * r->pose[6], 
                                         2 * r->pose[3] * r->pose[3] - 1
-                                        + 2 * r->pose[4] * r->pose[4]);
+                                        + 2 * r->pose[4] * r->pose[4]);*/
+								*ATTI_black = atan2(2 * r->pose[4] * r->pose[6] + 2 * r->pose[3] * r->pose[5], 
+                                        1 - 2 * r->pose[4] * r->pose[4] - 2 * r->pose[5] * r->pose[5]); // Phasespace ThetaY = Lab ThetaZ -- For a YXZ Euler sequence, tan(thetaY) = R(1,3)/R(3,3)
                                 *current_time = event->time();
                             }   
                         }
