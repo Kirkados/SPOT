@@ -93,6 +93,9 @@ dxl_error = 0;                              % Dynamixel error
 dxl_present_position = 0;                   % Present position
 
 
+% Initialize Groupsyncwrite Structs
+groupwrite_num = groupSyncWrite(port_num, PROTOCOL_VERSION, ADDR_GOAL_VELOCITY, 4);
+
 % Open port
 if (openPort(port_num))
     fprintf('Succeeded to open the port!\n');
@@ -134,8 +137,8 @@ elseif dxl_error ~= 0
     fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
 end
 
-% Set the Profile acceleration time to 500 ms (a block in serverRate in Simulink)
-write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PROFILE_ACCELERATION, typecast(int32(500), 'uint32'));
+% Set the Profile acceleration time to 125 ms (a block in serverRate in Simulink)
+write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PROFILE_ACCELERATION, typecast(int32(125), 'uint32'));
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
 if dxl_comm_result ~= COMM_SUCCESS
@@ -202,16 +205,23 @@ while counter < 20
     if (dxl_present_position >= 265 && goal_velocities > 0 ) || (dxl_present_position < 95 && goal_velocities < 0)
         %goal_velocities = 0;
     end
+
+    % Add Dynamixel#1 goal velocity value to the Syncwrite storage
+    dxl_addparam_result = groupSyncWriteAddParam(groupwrite_num, 1, typecast(int32(goal_velocities), 'uint32'), LEN_PRO_GOAL_POSITION);
+    if dxl_addparam_result ~= true
+        fprintf('[ID:%03d] groupSyncWrite addparam failed', DXL1_ID);
+        return;
+    end
     
-    % Write goal velocity
-    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_GOAL_VELOCITY, typecast(int32(goal_velocities), 'uint32'));
+    % Syncwrite goal velocity
+    groupSyncWriteTxPacket(groupwrite_num);
     dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
-    dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
     if dxl_comm_result ~= COMM_SUCCESS
         fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
-    elseif dxl_error ~= 0
-        fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
     end
+
+    % Clear syncwrite parameter storage
+    groupSyncWriteClearParam(groupwrite_num);
     
     fprintf('[ID:%03d] GoalVel:%03d  PresPos:%03d deg   PresVel:%03d\n', DXL_ID, goal_velocities, typecast(uint32(dxl_present_position), 'int32'), typecast(uint32(dxl_present_velocity), 'int32'));    
     
