@@ -57,7 +57,7 @@ dynamixel::GroupSyncRead groupSyncRead(portHandler, packetHandler, ADDR_MX_PRESE
 
 
 void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double D_GAIN, double MAX_POSITION,
-                                           double MIN_POSITION, double VELOCITY_PROFILE, double ACCELERATION_PROFILE)
+                                           double MIN_POSITION, double MOVE_TIME)
 {
     
     // Define the transmission failure code
@@ -65,39 +65,45 @@ void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double 
         
     // Open COM port for serial communication with the actuators
    portHandler->openPort();
+   
+    // Set port baudrate
+	portHandler->setBaudRate(BAUDRATE);
     
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
     
     // Set up the motors for position control
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_OPERATING_MODE, 3, &dxl_error);
+	dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_POSITION_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_POSITION_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_POSITION_D_GAIN, D_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_MAX_POSITION, MAX_POSITION, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_MIN_POSITION, MIN_POSITION, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_PROFILE, VELOCITY_PROFILE, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_PROFILE, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_PROFILE, MOVE_TIME, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, 0, &dxl_error);
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
     
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 3, &dxl_error);
+	dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_POSITION_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_POSITION_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_POSITION_D_GAIN, D_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_MAX_POSITION, MAX_POSITION, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_MIN_POSITION, MIN_POSITION, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_PROFILE, VELOCITY_PROFILE, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_PROFILE, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_PROFILE, MOVE_TIME, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, 0, &dxl_error);
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
     
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_OPERATING_MODE, 3, &dxl_error);
+	dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_POSITION_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_POSITION_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_POSITION_D_GAIN, D_GAIN, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_MAX_POSITION, MAX_POSITION, &dxl_error);
     dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_MIN_POSITION, MIN_POSITION, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_PROFILE, VELOCITY_PROFILE, &dxl_error);
-    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, ACCELERATION_PROFILE, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_PROFILE, MOVE_TIME, &dxl_error);
+    dxl_comm_result   = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, 0, &dxl_error);
     dxl_comm_result   = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
 
 }
@@ -152,6 +158,9 @@ void initialize_dynamixel_PWM_control(double PWM_LIMIT)
         
     // Open COM port for serial communication with the actuators
    portHandler->openPort();
+   
+    // Set port baudrate
+	portHandler->setBaudRate(BAUDRATE);
     
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
@@ -180,6 +189,9 @@ void initialize_dynamixel_special_control(double P_GAIN, double I_GAIN, double D
         
     // Open COM port for serial communication with the actuators
    portHandler->openPort();
+   
+    // Set port baudrate
+	portHandler->setBaudRate(BAUDRATE);
     
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
@@ -212,6 +224,9 @@ void initialize_dynamixel_current_control(double CURRENT_LIMIT)
         
     // Open COM port for serial communication with the actuators
    portHandler->openPort();
+   
+    // Set port baudrate
+	portHandler->setBaudRate(BAUDRATE);
     
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
@@ -245,6 +260,9 @@ void initialize_dynamixel_arm_gripper_control(double P_GAIN_ARM, double I_GAIN_A
         
     // Open COM port for serial communication with the actuators
    portHandler->openPort();
+   
+    // Set port baudrate
+	portHandler->setBaudRate(BAUDRATE);
     
     // Initialize the dxl_error variable
     uint8_t dxl_error = 0;
