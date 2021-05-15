@@ -3,9 +3,9 @@
 //
 //  Code generation for model "DynamixelLibrary_Prototyping".
 //
-//  Model version              : 1.155
+//  Model version              : 1.181
 //  Simulink Coder version : 9.3 (R2020a) 18-Nov-2019
-//  C++ source code generated on : Sat May 15 12:57:04 2021
+//  C++ source code generated on : Sat May 15 14:47:59 2021
 //
 //  Target selection: ert.tlc
 //  Embedded hardware selection: ARM Compatible->ARM Cortex

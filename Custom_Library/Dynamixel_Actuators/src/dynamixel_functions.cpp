@@ -125,8 +125,6 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_TORQUE_ENABLE, 1, &dxl_error);
-	
-	//dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_GOAL_SPEED, -200, &dxl_error);
         
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
@@ -379,35 +377,34 @@ void read_dynamixel_position(double* JOINT1_POS_RAD, double* JOINT2_POS_RAD, dou
 
     // Add motors to the groupSyncRead (for read_dynamixel_position())
     dxl_addparam_result = groupSyncRead.addParam(1);
-    //dxl_addparam_result = groupSyncRead.addParam(2);
-    //dxl_addparam_result = groupSyncRead.addParam(3);
+    dxl_addparam_result = groupSyncRead.addParam(2);
+    dxl_addparam_result = groupSyncRead.addParam(3);
 
 	// Get present position values
     dxl1_present_position = groupSyncRead.getData(1, ADDR_MX_PRESENT_POSITION, 4);
-    //dxl2_present_position = groupSyncRead.getData(2, ADDR_MX_PRESENT_POSITION, 4);
-    //dxl3_present_position = groupSyncRead.getData(3, ADDR_MX_PRESENT_POSITION, 4);
+    dxl2_present_position = groupSyncRead.getData(2, ADDR_MX_PRESENT_POSITION, 4);
+    dxl3_present_position = groupSyncRead.getData(3, ADDR_MX_PRESENT_POSITION, 4);
     double joint1_wrapped = std::fmod(0.001534363 * dxl1_present_position, 6.283185307179586); // Converting bits to rads, making 0 rad be when the arm joint is extended, and wrapping to [-pi,pi)
     if (joint1_wrapped < 0)
         joint1_wrapped += 6.283185307179586;
     *JOINT1_POS_RAD = joint1_wrapped - 3.14159;
-    /*double joint2_wrapped = std::fmod(0.001534363 * dxl2_present_position, 6.283185307179586); // Converting bits to rads, making 0 rad be when the arm joint is extended, and wrapping to [-pi,pi)
+    double joint2_wrapped = std::fmod(0.001534363 * dxl2_present_position, 6.283185307179586); // Converting bits to rads, making 0 rad be when the arm joint is extended, and wrapping to [-pi,pi)
     if (joint2_wrapped < 0)
         joint2_wrapped += 6.283185307179586;
     *JOINT2_POS_RAD = joint2_wrapped - 3.14159;
     double joint3_wrapped = std::fmod(0.001534363 * dxl3_present_position, 6.283185307179586); // Converting bits to rads, making 0 rad be when the arm joint is extended, and wrapping to [-pi,pi)
     if (joint3_wrapped < 0)
         joint3_wrapped += 6.283185307179586;
-    *JOINT3_POS_RAD = joint3_wrapped - 3.14159;*/
+    *JOINT3_POS_RAD = joint3_wrapped - 3.14159;
 
     // Get present velocity values
     dxl1_present_speed = groupSyncRead.getData(1, ADDR_MX_PRESENT_SPEED, 4);
-    //dxl2_present_speed = groupSyncRead.getData(2, ADDR_MX_PRESENT_SPEED, 4);
-    //dxl3_present_speed = groupSyncRead.getData(3, ADDR_MX_PRESENT_SPEED, 4);
+    dxl2_present_speed = groupSyncRead.getData(2, ADDR_MX_PRESENT_SPEED, 4);
+    dxl3_present_speed = groupSyncRead.getData(3, ADDR_MX_PRESENT_SPEED, 4);
     *JOINT1_SPEED_RAD = 0.023981131017500 * dxl1_present_speed; // Converting bits to rad/s
-    //*JOINT2_SPEED_RAD = 0.023981131017500 * dxl2_present_speed; // Converting bits to rad/s
-    //*JOINT3_SPEED_RAD = 0.023981131017500 * dxl3_present_speed; // Converting bits to rad/s
-	*JOINT2_SPEED_RAD = 0.0;
-	*JOINT3_SPEED_RAD = 0.0;
+    *JOINT2_SPEED_RAD = 0.023981131017500 * dxl2_present_speed; // Converting bits to rad/s
+    *JOINT3_SPEED_RAD = 0.023981131017500 * dxl3_present_speed; // Converting bits to rad/s
+
 }
 
 void read_dynamixel_load(double* JOINT1_LOAD, double* JOINT2_LOAD, double* JOINT3_LOAD )
@@ -463,9 +460,9 @@ void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, doubl
 	{		
 		JOINT2_SPD_BITS = JOINT2_SPD_BITS + pow(2,32);
 	}
-	if (JOINT2_SPD_BITS < 0)
+	if (JOINT3_SPD_BITS < 0)
 	{		
-		JOINT2_SPD_BITS = JOINT2_SPD_BITS + pow(2,32);
+		JOINT3_SPD_BITS = JOINT3_SPD_BITS + pow(2,32);
 	}
 
 	// Allocate these into the byte array

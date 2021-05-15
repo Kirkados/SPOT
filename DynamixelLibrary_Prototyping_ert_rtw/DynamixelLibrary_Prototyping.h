@@ -3,9 +3,9 @@
 //
 //  Code generation for model "DynamixelLibrary_Prototyping".
 //
-//  Model version              : 1.155
+//  Model version              : 1.181
 //  Simulink Coder version : 9.3 (R2020a) 18-Nov-2019
-//  C++ source code generated on : Sat May 15 12:57:04 2021
+//  C++ source code generated on : Sat May 15 14:47:59 2021
 //
 //  Target selection: ert.tlc
 //  Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -78,32 +78,36 @@
 # define rtmGetTPtr(rtm)               ((rtm)->Timing.t)
 #endif
 
+// Block signals for system '<Root>/Check limits1'
+typedef struct {
+  real_T saturated_omega;              // '<Root>/Check limits1'
+} B_Checklimits1_DynamixelLibra_T;
+
 // Block signals (default storage)
 typedef struct {
-  real_T Clock;                        // '<Root>/Clock'
   real_T SineWave;                     // '<Root>/Sine Wave'
+  real_T Clock;                        // '<Root>/Clock'
+  real_T saturated_omega;              // '<Root>/Check limits'
   real_T MATLABSystem4_o1;             // '<Root>/MATLAB System4'
   real_T MATLABSystem4_o2;             // '<Root>/MATLAB System4'
   real_T MATLABSystem4_o3;             // '<Root>/MATLAB System4'
   real_T MATLABSystem4_o4;             // '<Root>/MATLAB System4'
   real_T MATLABSystem4_o5;             // '<Root>/MATLAB System4'
   real_T MATLABSystem4_o6;             // '<Root>/MATLAB System4'
+  B_Checklimits1_DynamixelLibra_T sf_Checklimits2;// '<Root>/Check limits2'
+  B_Checklimits1_DynamixelLibra_T sf_Checklimits1;// '<Root>/Check limits1'
 } B_DynamixelLibrary_Prototypin_T;
 
 // Block states (default storage) for system '<Root>'
 typedef struct {
   InitializeForSpeed_DynamixelL_T obj; // '<Root>/MATLAB System1'
   ReadArm_Position_Rates_Dynami_T obj_o;// '<Root>/MATLAB System4'
+  MoveArm_Speed_DynamixelLibrar_T obj_g;// '<Root>/MATLAB System3'
+  real_T Delay_DSTATE;                 // '<Root>/Delay'
+  real_T Delay1_DSTATE;                // '<Root>/Delay1'
+  real_T Delay2_DSTATE;                // '<Root>/Delay2'
   real_T lastSin;                      // '<Root>/Sine Wave'
   real_T lastCos;                      // '<Root>/Sine Wave'
-  struct {
-    void *LoggedData;
-  } ToWorkspace3_PWORK;                // '<Root>/To Workspace3'
-
-  struct {
-    void *LoggedData;
-  } ToWorkspace7_PWORK;                // '<Root>/To Workspace7'
-
   struct {
     void *LoggedData;
   } ToWorkspace_PWORK;                 // '<Root>/To Workspace'
@@ -128,26 +132,52 @@ typedef struct {
     void *LoggedData;
   } ToWorkspace6_PWORK;                // '<Root>/To Workspace6'
 
+  struct {
+    void *LoggedData;
+  } ToWorkspace7_PWORK;                // '<Root>/To Workspace7'
+
+  struct {
+    void *LoggedData;
+  } ToWorkspace8_PWORK;                // '<Root>/To Workspace8'
+
+  struct {
+    void *LoggedData;
+  } ToWorkspace3_PWORK;                // '<Root>/To Workspace3'
+
   int32_T systemEnable;                // '<Root>/Sine Wave'
-  MoveArm_Speed_DynamixelLibrar_T obj_g;// '<Root>/MATLAB System3'
 } DW_DynamixelLibrary_Prototypi_T;
 
 // Parameters (default storage)
 struct P_DynamixelLibrary_Prototypin_T_ {
+  real_T maxOmega;                     // Variable: maxOmega
+                                          //  Referenced by:
+                                          //    '<Root>/Check limits'
+                                          //    '<Root>/Check limits1'
+                                          //    '<Root>/Check limits2'
+
+  real_T serverRate;                   // Variable: serverRate
+                                          //  Referenced by:
+                                          //    '<Root>/Check limits'
+                                          //    '<Root>/Check limits1'
+                                          //    '<Root>/Check limits2'
+
   real_T MATLABSystem1_P_GAIN;         // Expression: 100
                                           //  Referenced by: '<Root>/MATLAB System1'
 
   real_T MATLABSystem1_I_GAIN;         // Expression: 1920
                                           //  Referenced by: '<Root>/MATLAB System1'
 
-  real_T MATLABSystem1_VELOCITY_LIMIT; // Expression: 1023
+  real_T MATLABSystem1_VELOCITY_LIMIT; // Expression: 22
                                           //  Referenced by: '<Root>/MATLAB System1'
 
-  real_T MATLABSystem1_ACCELERATION_TIME;// Expression: 125
+  real_T MATLABSystem1_ACCELERATION_TIME;// Expression: 500
                                             //  Referenced by: '<Root>/MATLAB System1'
 
-  real_T MATLABSystem4_SampleTime;     // Expression: 0.05
+  real_T MATLABSystem4_SampleTime;     // Expression: 0.5
                                           //  Referenced by: '<Root>/MATLAB System4'
+
+  real_T Delay_InitialCondition;       // Expression: 0.0
+                                          //  Referenced by: '<Root>/Delay'
 
   real_T SineWave_Amp;                 // Expression: 0.1
                                           //  Referenced by: '<Root>/Sine Wave'
@@ -155,7 +185,7 @@ struct P_DynamixelLibrary_Prototypin_T_ {
   real_T SineWave_Bias;                // Expression: 0
                                           //  Referenced by: '<Root>/Sine Wave'
 
-  real_T SineWave_Freq;                // Expression: 2*pi/10
+  real_T SineWave_Freq;                // Expression: 2*pi/40
                                           //  Referenced by: '<Root>/Sine Wave'
 
   real_T SineWave_Hsin;                // Computed Parameter: SineWave_Hsin
@@ -170,8 +200,14 @@ struct P_DynamixelLibrary_Prototypin_T_ {
   real_T SineWave_PCos;                // Computed Parameter: SineWave_PCos
                                           //  Referenced by: '<Root>/Sine Wave'
 
-  real_T Constant3_Value;              // Expression: 0
-                                          //  Referenced by: '<Root>/Constant3'
+  real_T deltaT_Gain;                  // Expression: 0.5
+                                          //  Referenced by: '<Root>/deltaT'
+
+  real_T Delay1_InitialCondition;      // Expression: 0.0
+                                          //  Referenced by: '<Root>/Delay1'
+
+  real_T Delay2_InitialCondition;      // Expression: 0.0
+                                          //  Referenced by: '<Root>/Delay2'
 
 };
 
@@ -279,15 +315,6 @@ extern "C" {
 #endif
 
 //-
-//  These blocks were eliminated from the model due to optimizations:
-//
-//  Block '<Root>/Delay' : Unused code path elimination
-//  Block '<Root>/Desired acceleration rad//s^2' : Unused code path elimination
-//  Block '<Root>/Sum' : Unused code path elimination
-//  Block '<Root>/deltaT' : Unused code path elimination
-
-
-//-
 //  The generated code includes comments that allow you to trace directly
 //  back to the appropriate location in the model.  The basic format
 //  is <system>/block_name, where system is the system number (uniquely
@@ -302,5 +329,8 @@ extern "C" {
 //  Here is the system hierarchy for this model
 //
 //  '<Root>' : 'DynamixelLibrary_Prototyping'
+//  '<S1>'   : 'DynamixelLibrary_Prototyping/Check limits'
+//  '<S2>'   : 'DynamixelLibrary_Prototyping/Check limits1'
+//  '<S3>'   : 'DynamixelLibrary_Prototyping/Check limits2'
 
 #endif                            // RTW_HEADER_DynamixelLibrary_Prototyping_h_

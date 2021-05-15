@@ -2,7 +2,7 @@
 ## Makefile generated for Simulink model 'DynamixelLibrary_Prototyping'. 
 ## 
 ## Makefile     : DynamixelLibrary_Prototyping.mk
-## Generated on : Sat May 15 12:55:30 2021
+## Generated on : Sat May 15 14:48:02 2021
 ## MATLAB Coder version: 5.0 (R2020a)
 ## 
 ## Build Info:

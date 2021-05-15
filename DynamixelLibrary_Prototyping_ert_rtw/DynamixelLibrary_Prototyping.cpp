@@ -3,9 +3,9 @@
 //
 //  Code generation for model "DynamixelLibrary_Prototyping".
 //
-//  Model version              : 1.155
+//  Model version              : 1.181
 //  Simulink Coder version : 9.3 (R2020a) 18-Nov-2019
-//  C++ source code generated on : Sat May 15 12:57:04 2021
+//  C++ source code generated on : Sat May 15 14:47:59 2021
 //
 //  Target selection: ert.tlc
 //  Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -32,20 +32,66 @@ RT_MODEL_DynamixelLibrary_Pro_T *const DynamixelLibrary_Prototyping_M =
   &DynamixelLibrary_Prototyping_M_;
 
 // Forward declaration for local functions
-static void matlabCodegenHandle_matlabCo_o4(MoveArm_Speed_DynamixelLibrar_T *obj);
-static void matlabCodegenHandle_matlabCod_o(ReadArm_Position_Rates_Dynami_T *obj);
+static void matlabCodegenHandle_matlabCo_o4(ReadArm_Position_Rates_Dynami_T *obj);
+static void DynamixelLib_SystemCore_release(const
+  MoveArm_Speed_DynamixelLibrar_T *obj);
+static void DynamixelLi_SystemCore_delete_o(const
+  MoveArm_Speed_DynamixelLibrar_T *obj);
+static void matlabCodegenHandle_matlabCod_o(MoveArm_Speed_DynamixelLibrar_T *obj);
 static void matlabCodegenHandle_matlabCodeg(InitializeForSpeed_DynamixelL_T *obj);
-static void matlabCodegenHandle_matlabCo_o4(MoveArm_Speed_DynamixelLibrar_T *obj)
+
+//
+// Output and update for atomic system:
+//    '<Root>/Check limits1'
+//    '<Root>/Check limits2'
+//
+void DynamixelLibrary_P_Checklimits1(real_T rtu_omega_command, real_T
+  rtu_alpha_command, real_T rtu_current_theta, real_T rtu_current_omega,
+  B_Checklimits1_DynamixelLibra_T *localB)
+{
+  real_T next_theta;
+  next_theta = (rtu_current_omega * DynamixelLibrary_Prototyping_P.serverRate +
+                rtu_current_theta) + 0.5 * rtu_alpha_command *
+    (DynamixelLibrary_Prototyping_P.serverRate *
+     DynamixelLibrary_Prototyping_P.serverRate);
+  if (((next_theta >= 1.5707963267948966) && (rtu_omega_command > 0.0)) ||
+      ((next_theta <= -1.5707963267948966) && (rtu_omega_command < 0.0))) {
+    localB->saturated_omega = 0.0;
+  } else if (rtu_omega_command > DynamixelLibrary_Prototyping_P.maxOmega) {
+    localB->saturated_omega = DynamixelLibrary_Prototyping_P.maxOmega;
+  } else if (rtu_omega_command < -DynamixelLibrary_Prototyping_P.maxOmega) {
+    localB->saturated_omega = -DynamixelLibrary_Prototyping_P.maxOmega;
+  } else {
+    localB->saturated_omega = rtu_omega_command;
+  }
+}
+
+static void matlabCodegenHandle_matlabCo_o4(ReadArm_Position_Rates_Dynami_T *obj)
 {
   if (!obj->matlabCodegenIsDeleted) {
     obj->matlabCodegenIsDeleted = true;
   }
 }
 
-static void matlabCodegenHandle_matlabCod_o(ReadArm_Position_Rates_Dynami_T *obj)
+static void DynamixelLib_SystemCore_release(const
+  MoveArm_Speed_DynamixelLibrar_T *obj)
+{
+  if ((obj->isInitialized == 1) && obj->isSetupComplete) {
+    command_dynamixel_speed(0.0, 0.0, 0.0);
+  }
+}
+
+static void DynamixelLi_SystemCore_delete_o(const
+  MoveArm_Speed_DynamixelLibrar_T *obj)
+{
+  DynamixelLib_SystemCore_release(obj);
+}
+
+static void matlabCodegenHandle_matlabCod_o(MoveArm_Speed_DynamixelLibrar_T *obj)
 {
   if (!obj->matlabCodegenIsDeleted) {
     obj->matlabCodegenIsDeleted = true;
+    DynamixelLi_SystemCore_delete_o(obj);
   }
 }
 
@@ -61,18 +107,15 @@ void DynamixelLibrary_Prototyping_step(void)
 {
   {
     real_T sampleTime;
-    real_T lastSin_tmp;
-
-    // Clock: '<Root>/Clock'
-    DynamixelLibrary_Prototyping_B.Clock =
-      DynamixelLibrary_Prototyping_M->Timing.t[0];
+    real_T rtb_Sum;
+    real_T rtb_deltaT;
 
     // Sin: '<Root>/Sine Wave'
     if (DynamixelLibrary_Prototyping_DW.systemEnable != 0) {
-      lastSin_tmp = DynamixelLibrary_Prototyping_P.SineWave_Freq *
-        ((DynamixelLibrary_Prototyping_M->Timing.clockTick1) * 0.05);
-      DynamixelLibrary_Prototyping_DW.lastSin = sin(lastSin_tmp);
-      DynamixelLibrary_Prototyping_DW.lastCos = cos(lastSin_tmp);
+      rtb_deltaT = DynamixelLibrary_Prototyping_P.SineWave_Freq *
+        ((DynamixelLibrary_Prototyping_M->Timing.clockTick1) * 0.5);
+      DynamixelLibrary_Prototyping_DW.lastSin = sin(rtb_deltaT);
+      DynamixelLibrary_Prototyping_DW.lastCos = cos(rtb_deltaT);
       DynamixelLibrary_Prototyping_DW.systemEnable = 0;
     }
 
@@ -92,12 +135,14 @@ void DynamixelLibrary_Prototyping_step(void)
 
     // End of Sin: '<Root>/Sine Wave'
 
-    // MATLABSystem: '<Root>/MATLAB System3' incorporates:
-    //   Constant: '<Root>/Constant3'
+    // Gain: '<Root>/deltaT'
+    rtb_deltaT = DynamixelLibrary_Prototyping_P.deltaT_Gain *
+      DynamixelLibrary_Prototyping_B.SineWave;
 
-    command_dynamixel_speed(DynamixelLibrary_Prototyping_B.SineWave,
-      DynamixelLibrary_Prototyping_P.Constant3_Value,
-      DynamixelLibrary_Prototyping_P.Constant3_Value);
+    // Sum: '<Root>/Sum' incorporates:
+    //   Delay: '<Root>/Delay'
+
+    rtb_Sum = DynamixelLibrary_Prototyping_DW.Delay_DSTATE + rtb_deltaT;
 
     // MATLABSystem: '<Root>/MATLAB System4'
     if (DynamixelLibrary_Prototyping_DW.obj_o.SampleTime !=
@@ -125,6 +170,60 @@ void DynamixelLibrary_Prototyping_step(void)
       &DynamixelLibrary_Prototyping_B.MATLABSystem4_o6);
 
     // End of MATLABSystem: '<Root>/MATLAB System4'
+
+    // MATLAB Function: '<Root>/Check limits'
+    sampleTime = (DynamixelLibrary_Prototyping_B.MATLABSystem4_o4 *
+                  DynamixelLibrary_Prototyping_P.serverRate +
+                  DynamixelLibrary_Prototyping_B.MATLABSystem4_o1) + 0.5 *
+      DynamixelLibrary_Prototyping_B.SineWave *
+      (DynamixelLibrary_Prototyping_P.serverRate *
+       DynamixelLibrary_Prototyping_P.serverRate);
+    if (((sampleTime >= 1.5707963267948966) && (rtb_Sum > 0.0)) || ((sampleTime <=
+          -1.5707963267948966) && (rtb_Sum < 0.0))) {
+      DynamixelLibrary_Prototyping_B.saturated_omega = 0.0;
+    } else if (rtb_Sum > DynamixelLibrary_Prototyping_P.maxOmega) {
+      DynamixelLibrary_Prototyping_B.saturated_omega =
+        DynamixelLibrary_Prototyping_P.maxOmega;
+    } else if (rtb_Sum < -DynamixelLibrary_Prototyping_P.maxOmega) {
+      DynamixelLibrary_Prototyping_B.saturated_omega =
+        -DynamixelLibrary_Prototyping_P.maxOmega;
+    } else {
+      DynamixelLibrary_Prototyping_B.saturated_omega = rtb_Sum;
+    }
+
+    // End of MATLAB Function: '<Root>/Check limits'
+
+    // MATLAB Function: '<Root>/Check limits1' incorporates:
+    //   Delay: '<Root>/Delay1'
+    //   Sum: '<Root>/Sum1'
+
+    DynamixelLibrary_P_Checklimits1
+      (DynamixelLibrary_Prototyping_DW.Delay1_DSTATE + rtb_deltaT,
+       DynamixelLibrary_Prototyping_B.SineWave,
+       DynamixelLibrary_Prototyping_B.MATLABSystem4_o2,
+       DynamixelLibrary_Prototyping_B.MATLABSystem4_o5,
+       &DynamixelLibrary_Prototyping_B.sf_Checklimits1);
+
+    // MATLAB Function: '<Root>/Check limits2' incorporates:
+    //   Delay: '<Root>/Delay2'
+    //   Sum: '<Root>/Sum2'
+
+    DynamixelLibrary_P_Checklimits1
+      (DynamixelLibrary_Prototyping_DW.Delay2_DSTATE + rtb_deltaT,
+       DynamixelLibrary_Prototyping_B.SineWave,
+       DynamixelLibrary_Prototyping_B.MATLABSystem4_o3,
+       DynamixelLibrary_Prototyping_B.MATLABSystem4_o6,
+       &DynamixelLibrary_Prototyping_B.sf_Checklimits2);
+
+    // MATLABSystem: '<Root>/MATLAB System3'
+    command_dynamixel_speed(DynamixelLibrary_Prototyping_B.saturated_omega,
+      DynamixelLibrary_Prototyping_B.sf_Checklimits1.saturated_omega,
+      DynamixelLibrary_Prototyping_B.sf_Checklimits2.saturated_omega);
+
+    // Clock: '<Root>/Clock'
+    DynamixelLibrary_Prototyping_B.Clock =
+      DynamixelLibrary_Prototyping_M->Timing.t[0];
+
     // MATLABSystem: '<Root>/MATLAB System1'
     if (DynamixelLibrary_Prototyping_DW.obj.P_GAIN !=
         DynamixelLibrary_Prototyping_P.MATLABSystem1_P_GAIN) {
@@ -156,6 +255,10 @@ void DynamixelLibrary_Prototyping_step(void)
   {
     real_T HoldSine;
 
+    // Update for Delay: '<Root>/Delay'
+    DynamixelLibrary_Prototyping_DW.Delay_DSTATE =
+      DynamixelLibrary_Prototyping_B.saturated_omega;
+
     // Update for Sin: '<Root>/Sine Wave'
     HoldSine = DynamixelLibrary_Prototyping_DW.lastSin;
     DynamixelLibrary_Prototyping_DW.lastSin =
@@ -167,6 +270,14 @@ void DynamixelLibrary_Prototyping_step(void)
       DynamixelLibrary_Prototyping_DW.lastCos *
       DynamixelLibrary_Prototyping_P.SineWave_HCos - HoldSine *
       DynamixelLibrary_Prototyping_P.SineWave_Hsin;
+
+    // Update for Delay: '<Root>/Delay1'
+    DynamixelLibrary_Prototyping_DW.Delay1_DSTATE =
+      DynamixelLibrary_Prototyping_B.sf_Checklimits1.saturated_omega;
+
+    // Update for Delay: '<Root>/Delay2'
+    DynamixelLibrary_Prototyping_DW.Delay2_DSTATE =
+      DynamixelLibrary_Prototyping_B.sf_Checklimits2.saturated_omega;
   }
 
   // External mode
@@ -176,9 +287,9 @@ void DynamixelLibrary_Prototyping_step(void)
     rtExtModeUpload(0, (real_T)DynamixelLibrary_Prototyping_M->Timing.t[0]);
   }
 
-  {                                    // Sample time: [0.05s, 0.0s]
+  {                                    // Sample time: [0.5s, 0.0s]
     rtExtModeUpload(1, (real_T)
-                    ((DynamixelLibrary_Prototyping_M->Timing.clockTick1) * 0.05));
+                    ((DynamixelLibrary_Prototyping_M->Timing.clockTick1) * 0.5));
   }
 
   // signal main to stop simulation
@@ -206,9 +317,9 @@ void DynamixelLibrary_Prototyping_step(void)
     DynamixelLibrary_Prototyping_M->Timing.stepSize0;
 
   {
-    // Update absolute timer for sample time: [0.05s, 0.0s]
+    // Update absolute timer for sample time: [0.5s, 0.0s]
     // The "clockTick1" counts the number of times the code of this task has
-    //  been executed. The resolution of this integer timer is 0.05, which is the step size
+    //  been executed. The resolution of this integer timer is 0.5, which is the step size
     //  of the task. Size of "clockTick1" ensures timer will not overflow during the
     //  application lifespan selected.
 
@@ -244,25 +355,28 @@ void DynamixelLibrary_Prototyping_initialize(void)
                     "FixedStepDiscrete");
   rtmSetTPtr(DynamixelLibrary_Prototyping_M,
              &DynamixelLibrary_Prototyping_M->Timing.tArray[0]);
-  rtmSetTFinal(DynamixelLibrary_Prototyping_M, 10.0);
-  DynamixelLibrary_Prototyping_M->Timing.stepSize0 = 0.05;
+  rtmSetTFinal(DynamixelLibrary_Prototyping_M, 40.0);
+  DynamixelLibrary_Prototyping_M->Timing.stepSize0 = 0.5;
 
   // External mode info
-  DynamixelLibrary_Prototyping_M->Sizes.checksums[0] = (2568510761U);
-  DynamixelLibrary_Prototyping_M->Sizes.checksums[1] = (3085919665U);
-  DynamixelLibrary_Prototyping_M->Sizes.checksums[2] = (2706735139U);
-  DynamixelLibrary_Prototyping_M->Sizes.checksums[3] = (2252153857U);
+  DynamixelLibrary_Prototyping_M->Sizes.checksums[0] = (3107406758U);
+  DynamixelLibrary_Prototyping_M->Sizes.checksums[1] = (109104255U);
+  DynamixelLibrary_Prototyping_M->Sizes.checksums[2] = (1250354194U);
+  DynamixelLibrary_Prototyping_M->Sizes.checksums[3] = (4232352042U);
 
   {
     static const sysRanDType rtAlwaysEnabled = SUBSYS_RAN_BC_ENABLE;
     static RTWExtModeInfo rt_ExtModeInfo;
-    static const sysRanDType *systemRan[4];
+    static const sysRanDType *systemRan[7];
     DynamixelLibrary_Prototyping_M->extModeInfo = (&rt_ExtModeInfo);
     rteiSetSubSystemActiveVectorAddresses(&rt_ExtModeInfo, systemRan);
     systemRan[0] = &rtAlwaysEnabled;
     systemRan[1] = &rtAlwaysEnabled;
     systemRan[2] = &rtAlwaysEnabled;
     systemRan[3] = &rtAlwaysEnabled;
+    systemRan[4] = &rtAlwaysEnabled;
+    systemRan[5] = &rtAlwaysEnabled;
+    systemRan[6] = &rtAlwaysEnabled;
     rteiSetModelMappingInfoPtr(DynamixelLibrary_Prototyping_M->extModeInfo,
       &DynamixelLibrary_Prototyping_M->SpecialInfo.mappingInfo);
     rteiSetChecksumsPtr(DynamixelLibrary_Prototyping_M->extModeInfo,
@@ -297,9 +411,17 @@ void DynamixelLibrary_Prototyping_initialize(void)
   {
     real_T sampleTime;
 
-    // Start for MATLABSystem: '<Root>/MATLAB System3'
-    DynamixelLibrary_Prototyping_DW.obj_g.matlabCodegenIsDeleted = false;
-    DynamixelLibrary_Prototyping_DW.obj_g.isSetupComplete = true;
+    // InitializeConditions for Delay: '<Root>/Delay'
+    DynamixelLibrary_Prototyping_DW.Delay_DSTATE =
+      DynamixelLibrary_Prototyping_P.Delay_InitialCondition;
+
+    // InitializeConditions for Delay: '<Root>/Delay1'
+    DynamixelLibrary_Prototyping_DW.Delay1_DSTATE =
+      DynamixelLibrary_Prototyping_P.Delay1_InitialCondition;
+
+    // InitializeConditions for Delay: '<Root>/Delay2'
+    DynamixelLibrary_Prototyping_DW.Delay2_DSTATE =
+      DynamixelLibrary_Prototyping_P.Delay2_InitialCondition;
 
     // Start for MATLABSystem: '<Root>/MATLAB System4'
     DynamixelLibrary_Prototyping_DW.obj_o.matlabCodegenIsDeleted = false;
@@ -314,6 +436,11 @@ void DynamixelLibrary_Prototyping_initialize(void)
     DynamixelLibrary_Prototyping_DW.obj_o.isSetupComplete = true;
 
     // End of Start for MATLABSystem: '<Root>/MATLAB System4'
+
+    // Start for MATLABSystem: '<Root>/MATLAB System3'
+    DynamixelLibrary_Prototyping_DW.obj_g.matlabCodegenIsDeleted = false;
+    DynamixelLibrary_Prototyping_DW.obj_g.isInitialized = 1;
+    DynamixelLibrary_Prototyping_DW.obj_g.isSetupComplete = true;
 
     // Start for MATLABSystem: '<Root>/MATLAB System1'
     DynamixelLibrary_Prototyping_DW.obj.matlabCodegenIsDeleted = false;
@@ -341,11 +468,11 @@ void DynamixelLibrary_Prototyping_initialize(void)
 // Model terminate function
 void DynamixelLibrary_Prototyping_terminate(void)
 {
-  // Terminate for MATLABSystem: '<Root>/MATLAB System3'
-  matlabCodegenHandle_matlabCo_o4(&DynamixelLibrary_Prototyping_DW.obj_g);
-
   // Terminate for MATLABSystem: '<Root>/MATLAB System4'
-  matlabCodegenHandle_matlabCod_o(&DynamixelLibrary_Prototyping_DW.obj_o);
+  matlabCodegenHandle_matlabCo_o4(&DynamixelLibrary_Prototyping_DW.obj_o);
+
+  // Terminate for MATLABSystem: '<Root>/MATLAB System3'
+  matlabCodegenHandle_matlabCod_o(&DynamixelLibrary_Prototyping_DW.obj_g);
 
   // Terminate for MATLABSystem: '<Root>/MATLAB System1'
   matlabCodegenHandle_matlabCodeg(&DynamixelLibrary_Prototyping_DW.obj);

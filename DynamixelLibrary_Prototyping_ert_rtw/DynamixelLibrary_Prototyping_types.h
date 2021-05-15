@@ -3,9 +3,9 @@
 //
 //  Code generation for model "DynamixelLibrary_Prototyping".
 //
-//  Model version              : 1.155
+//  Model version              : 1.181
 //  Simulink Coder version : 9.3 (R2020a) 18-Nov-2019
-//  C++ source code generated on : Sat May 15 12:57:04 2021
+//  C++ source code generated on : Sat May 15 14:47:59 2021
 //
 //  Target selection: ert.tlc
 //  Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -44,6 +44,25 @@ typedef struct tag_Wt2OnxqUigLpjJD89hMCz InitializeForSpeed_DynamixelL_T;
 
 #endif                                 //typedef_InitializeForSpeed_DynamixelL_T
 
+#ifndef struct_tag_TSV6Smi1xc1dkgDvq3ydV
+#define struct_tag_TSV6Smi1xc1dkgDvq3ydV
+
+struct tag_TSV6Smi1xc1dkgDvq3ydV
+{
+  boolean_T matlabCodegenIsDeleted;
+  int32_T isInitialized;
+  boolean_T isSetupComplete;
+};
+
+#endif                                 //struct_tag_TSV6Smi1xc1dkgDvq3ydV
+
+#ifndef typedef_MoveArm_Speed_DynamixelLibrar_T
+#define typedef_MoveArm_Speed_DynamixelLibrar_T
+
+typedef struct tag_TSV6Smi1xc1dkgDvq3ydV MoveArm_Speed_DynamixelLibrar_T;
+
+#endif                                 //typedef_MoveArm_Speed_DynamixelLibrar_T
+
 #ifndef struct_tag_x0PTJOOFtVdlhp8iMPqZXD
 #define struct_tag_x0PTJOOFtVdlhp8iMPqZXD
 
@@ -63,24 +82,6 @@ struct tag_x0PTJOOFtVdlhp8iMPqZXD
 typedef struct tag_x0PTJOOFtVdlhp8iMPqZXD ReadArm_Position_Rates_Dynami_T;
 
 #endif                                 //typedef_ReadArm_Position_Rates_Dynami_T
-
-#ifndef struct_tag_80SxTHy3kPZAUqgTUDmFM
-#define struct_tag_80SxTHy3kPZAUqgTUDmFM
-
-struct tag_80SxTHy3kPZAUqgTUDmFM
-{
-  boolean_T matlabCodegenIsDeleted;
-  boolean_T isSetupComplete;
-};
-
-#endif                                 //struct_tag_80SxTHy3kPZAUqgTUDmFM
-
-#ifndef typedef_MoveArm_Speed_DynamixelLibrar_T
-#define typedef_MoveArm_Speed_DynamixelLibrar_T
-
-typedef struct tag_80SxTHy3kPZAUqgTUDmFM MoveArm_Speed_DynamixelLibrar_T;
-
-#endif                                 //typedef_MoveArm_Speed_DynamixelLibrar_T
 
 // Parameters (default storage)
 typedef struct P_DynamixelLibrary_Prototypin_T_ P_DynamixelLibrary_Prototypin_T;

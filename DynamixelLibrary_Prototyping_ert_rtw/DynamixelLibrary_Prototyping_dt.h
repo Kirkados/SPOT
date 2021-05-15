@@ -3,9 +3,9 @@
 //
 //  Code generation for model "DynamixelLibrary_Prototyping".
 //
-//  Model version              : 1.155
+//  Model version              : 1.181
 //  Simulink Coder version : 9.3 (R2020a) 18-Nov-2019
-//  C++ source code generated on : Sat May 15 12:57:04 2021
+//  C++ source code generated on : Sat May 15 14:47:59 2021
 //
 //  Target selection: ert.tlc
 //  Embedded hardware selection: ARM Compatible->ARM Cortex
@@ -61,32 +61,38 @@ static const char_T * rtDataTypeNames[] = {
 
 // data type transitions for block I/O structure
 static DataTypeTransition rtBTransitions[] = {
-  { (char_T *)(&DynamixelLibrary_Prototyping_B.Clock), 0, 0, 8 }
+  { (char_T *)(&DynamixelLibrary_Prototyping_B.SineWave), 0, 0, 9 },
+
+  { (char_T *)(&DynamixelLibrary_Prototyping_B.sf_Checklimits2.saturated_omega),
+    0, 0, 1 },
+
+  { (char_T *)(&DynamixelLibrary_Prototyping_B.sf_Checklimits1.saturated_omega),
+    0, 0, 1 }
   ,
 
   { (char_T *)(&DynamixelLibrary_Prototyping_DW.obj), 14, 0, 1 },
 
   { (char_T *)(&DynamixelLibrary_Prototyping_DW.obj_o), 16, 0, 1 },
 
-  { (char_T *)(&DynamixelLibrary_Prototyping_DW.lastSin), 0, 0, 2 },
+  { (char_T *)(&DynamixelLibrary_Prototyping_DW.obj_g), 15, 0, 1 },
 
-  { (char_T *)(&DynamixelLibrary_Prototyping_DW.ToWorkspace3_PWORK.LoggedData),
-    11, 0, 8 },
+  { (char_T *)(&DynamixelLibrary_Prototyping_DW.Delay_DSTATE), 0, 0, 5 },
 
-  { (char_T *)(&DynamixelLibrary_Prototyping_DW.systemEnable), 6, 0, 1 },
+  { (char_T *)(&DynamixelLibrary_Prototyping_DW.ToWorkspace_PWORK.LoggedData),
+    11, 0, 9 },
 
-  { (char_T *)(&DynamixelLibrary_Prototyping_DW.obj_g), 15, 0, 1 }
+  { (char_T *)(&DynamixelLibrary_Prototyping_DW.systemEnable), 6, 0, 1 }
 };
 
 // data type transition table for block I/O structure
 static DataTypeTransitionTable rtBTransTable = {
-  7U,
+  9U,
   rtBTransitions
 };
 
 // data type transitions for Parameters structure
 static DataTypeTransition rtPTransitions[] = {
-  { (char_T *)(&DynamixelLibrary_Prototyping_P.MATLABSystem1_P_GAIN), 0, 0, 13 }
+  { (char_T *)(&DynamixelLibrary_Prototyping_P.maxOmega), 0, 0, 18 }
 };
 
 // data type transition table for Parameters structure
