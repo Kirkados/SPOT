@@ -39,14 +39,14 @@ double initialize_phasespace(double platformSelection, double PS_SampleRate)
     
     /* The ID's indicate the location of each LED relative to the center of
        mass for the platform. */
-    tracker_id_RED_7_pos_string = "pos=146.960175,124.9189470,0";
-    tracker_id_RED_1_pos_string = "pos=144.960175,-154.081053,0";
-    tracker_id_RED_3_pos_string = "pos=-133.039825,-153.581053,0";
-    tracker_id_RED_5_pos_string = "pos=-131.539825,124.418947,0";
-    tracker_id_BLACK_15_pos_string = "pos=125.944730,153.415965,0";
-    tracker_id_BLACK_9_pos_string = "pos=124.944730,-125.084035,0";
-    tracker_id_BLACK_11_pos_string = "pos=-153.555270,-124.584035,0";
-    tracker_id_BLACK_13_pos_string = "pos=-151.805270,154.415965,0";
+    tracker_id_RED_5_pos_string = "pos=146.960175,124.9189470,0";
+    tracker_id_RED_3_pos_string = "pos=144.960175,-154.081053,0";
+    tracker_id_RED_1_pos_string = "pos=-133.039825,-153.581053,0";
+    tracker_id_RED_7_pos_string = "pos=-131.539825,124.418947,0";
+    tracker_id_BLACK_13_pos_string = "pos=125.944730,153.415965,0";
+    tracker_id_BLACK_11_pos_string = "pos=124.944730,-125.084035,0";
+    tracker_id_BLACK_9_pos_string = "pos=-153.555270,-124.584035,0";
+    tracker_id_BLACK_15_pos_string = "pos=-151.805270,154.415965,0";
 
 	const std::string myoptions = phaseSpaceOptions; 
     
@@ -63,10 +63,10 @@ double initialize_phasespace(double platformSelection, double PS_SampleRate)
 
     /* Assign markers to the rigid body and indicate their positions
        w.r.t the centre of mass (obtained from calibration text file) */
-    owl.assignMarker(tracker_id_RED, 7, "7", tracker_id_RED_7_pos_string); // top left
-    owl.assignMarker(tracker_id_RED, 1, "1", tracker_id_RED_1_pos_string); // top right
-    owl.assignMarker(tracker_id_RED, 3, "3", tracker_id_RED_3_pos_string); // bottom right
-    owl.assignMarker(tracker_id_RED, 5, "5", tracker_id_RED_5_pos_string); // bottom left 
+    owl.assignMarker(tracker_id_RED, 5, "5", tracker_id_RED_5_pos_string); // top left
+    owl.assignMarker(tracker_id_RED, 3, "3", tracker_id_RED_3_pos_string); // top right
+    owl.assignMarker(tracker_id_RED, 1, "1", tracker_id_RED_1_pos_string); // bottom right
+    owl.assignMarker(tracker_id_RED, 7, "7", tracker_id_RED_7_pos_string); // bottom left 
 
     uint32_t tracker_id_RED_arm = 1;
     owl.createTracker(tracker_id_RED_arm, "rigid", "RED_arm_flexible");
@@ -80,10 +80,10 @@ double initialize_phasespace(double platformSelection, double PS_SampleRate)
 
     /* Assign markers to the rigid body and indicate their positions
        w.r.t the centre of mass (obtained from calibration text file) */
-    owl.assignMarker(tracker_id_BLACK, 15, "15", tracker_id_BLACK_15_pos_string); // top left
-    owl.assignMarker(tracker_id_BLACK, 9,  "9", tracker_id_BLACK_9_pos_string); // top right
-    owl.assignMarker(tracker_id_BLACK, 11, "11", tracker_id_BLACK_11_pos_string); // bottom right
-    owl.assignMarker(tracker_id_BLACK, 13, "13", tracker_id_BLACK_13_pos_string); // bottom left
+    owl.assignMarker(tracker_id_BLACK, 13, "13", tracker_id_BLACK_13_pos_string); // top left
+    owl.assignMarker(tracker_id_BLACK, 11, "11", tracker_id_BLACK_11_pos_string); // top right
+    owl.assignMarker(tracker_id_BLACK, 9,  "9", tracker_id_BLACK_9_pos_string); // bottom right
+    owl.assignMarker(tracker_id_BLACK, 15, "15", tracker_id_BLACK_15_pos_string); // bottom left
 
     /* Start streaming phasespace data. Sending (1) streams data using TCP/IP,
        sending (2) streams data using UDP, and sending (3) streams data using
@@ -125,26 +125,22 @@ void stream_phasespace(double* XPOS_red, double* YPOS_red,
                         {
                             if (r->id == 0)
                             {
-                                *XPOS_red = r->pose[0]; // Phasespace X = Lab X
-                                *YPOS_red = -r->pose[2]; // Phasespace Z = -Lab Y
-                                /**ATTI_red = atan2(2 * r->pose[4] * r->pose[5] 
+                                *XPOS_red = r->pose[0];
+                                *YPOS_red = r->pose[1];
+                                *ATTI_red = atan2(2 * r->pose[4] * r->pose[5] 
                                         + 2 * r->pose[3] * r->pose[6], 
                                         2 * r->pose[3] * r->pose[3] - 1
-                                        + 2 * r->pose[4] * r->pose[4]);*/
-								*ATTI_red = atan2(2 * r->pose[4] * r->pose[6] + 2 * r->pose[3] * r->pose[5], 
-                                        1 - 2 * r->pose[4] * r->pose[4] - 2 * r->pose[5] * r->pose[5]); // Phasespace ThetaY = Lab ThetaZ -- For a YXZ Euler sequence, tan(thetaY) = R(1,3)/R(3,3)
+                                        + 2 * r->pose[4] * r->pose[4]);
                                 *current_time = event->time();
                             }
                             else if (r->id == 2)
                             {
-                                *XPOS_black = r->pose[0]; // Phasespace X = Lab X
-                                *YPOS_black = -r->pose[2]; // Phasespace Z = -Lab Y
-                                /**ATTI_black = atan2(2 * r->pose[4] * r->pose[5] 
+                                *XPOS_black = r->pose[0];
+                                *YPOS_black = r->pose[1];
+                                *ATTI_black = atan2(2 * r->pose[4] * r->pose[5] 
                                         + 2 * r->pose[3] * r->pose[6], 
                                         2 * r->pose[3] * r->pose[3] - 1
-                                        + 2 * r->pose[4] * r->pose[4]);*/
-								*ATTI_black = atan2(2 * r->pose[4] * r->pose[6] + 2 * r->pose[3] * r->pose[5], 
-                                        1 - 2 * r->pose[4] * r->pose[4] - 2 * r->pose[5] * r->pose[5]); // Phasespace ThetaY = Lab ThetaZ -- For a YXZ Euler sequence, tan(thetaY) = R(1,3)/R(3,3)
+                                        + 2 * r->pose[4] * r->pose[4]);
                                 *current_time = event->time();
                             }   
                         }
