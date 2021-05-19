@@ -33,6 +33,8 @@ fprintf('|----------------------------------------------------------------|\n')
 
 %% User-defined constants:
 
+target_angular_velocity = 0.1;
+
 % Converting from degrees to radians and vis versa:
 
 d2r                            = pi/180;
@@ -62,8 +64,8 @@ Kd_xb                          = 5;
 Kp_yb                          = 2;
 Kd_yb                          = 5;
 
-Kp_tb                          = 0; % Set to 0 because Black's attitude oscillates 
-Kd_tb                          = 0; % Set to 0 because Black's attitude oscillates 
+Kp_tb                          = 0.1/5; % Set to 0 because Black's attitude oscillates 
+Kd_tb                          = 0.4/5; % Set to 0 because Black's attitude oscillates 
 
 % Initialize the PID gains for the BLUE platform:
 
@@ -90,7 +92,7 @@ noise_variance_BLUE            = 0;
 % folder, and change line 204 from owl.frequency(10) to 
 % owl.frequency(serverRate):
 
-baseRate                       = 1/10;      % 4 Hz
+baseRate                       = 1/10;      % 10 Hz
 
 %% Set the frequency that the data is being sent up from the PhaseSpace:
 
@@ -180,16 +182,16 @@ thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-5
 %%  Set the drop, initial, and home positions for each platform:
 
 
-drop_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
-drop_states_BLACK         = [ 0.6; 0.6; -pi/2];  % [m; m; rad]
+drop_states_RED           = [ 0.6; 1.2; 0]; % [m; m; rad]
+drop_states_BLACK         = [ 2.6; 0.6; pi/2];  % [m; m; rad]
 drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
-init_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
-init_states_BLACK         = [ 0.6; 0.6; -pi/2];      % [m; m; rad]
+init_states_RED           = [ 0.6; 1.2; 0]; % [m; m; rad]
+init_states_BLACK         = [ 2.6; 0.6; pi/2];      % [m; m; rad]
 init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
-home_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
-home_states_BLACK         = [ 0.6; 0.6; -pi/2];  % [m; m; rad]
+home_states_RED           = [ 0.6; 1.2; 0]; % [m; m; rad]
+home_states_BLACK         = [ 2.6; 0.6; pi/2];  % [m; m; rad]
 home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
                                               
 %% Start the graphical user interface:
