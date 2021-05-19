@@ -33,6 +33,9 @@ fprintf('|----------------------------------------------------------------|\n')
 
 %% User-defined constants:
 
+% Target angular velocity
+target_angular_velocity = 0.1; % [rad/s]
+
 % Converting from degrees to radians and vis versa:
 
 d2r                            = pi/180;
@@ -62,8 +65,8 @@ Kd_xb                          = 5;
 Kp_yb                          = 2;
 Kd_yb                          = 5;
 
-Kp_tb                          = 0; % Set to 0 because Black's attitude oscillates 
-Kd_tb                          = 0; % Set to 0 because Black's attitude oscillates 
+Kp_tb                          = 0.1/5; % Set to 0 because Black's attitude oscillates 
+Kd_tb                          = 0.4/5; % Set to 0 because Black's attitude oscillates 
 
 % Initialize the PID gains for the BLUE platform:
 
