@@ -78,7 +78,7 @@ class Environment:
         #self.IRRELEVANT_STATES                = [6,7,8,9,10,11,12,13,14,15,16,17] # [original] indices of states who are irrelevant to the policy network
         #self.IRRELEVANT_STATES                = [2,3,5,9,10,11] # [chaser_x, chaser_y, chaser_theta, relative_x, relative_y, relative_angle, chaser_vx, chaser_vy, chaser_omega, target_vx, target_vy, target_omega]
         #self.IRRELEVANT_STATES                = [2,3,5,6,7,9,10,11] # [chaser_theta, relative_x, relative_y, relative_angle, chaser_vx, chaser_vy, chaser_omega, target_vx, target_vy, target_omega] # omitting chaser_x, chaser_y
-        self.IRRELEVANT_STATES                = [2,3,5,6,7,9,10,11,15,16] # [relative_x, relative_y, relative_angle, chaser_theta, chaser_vx, chaser_vy, chaser_omega, target_omega]; [chaser_theta, relative_x, relative_y, relative_angle, chaser_vx, chaser_vy, chaser_omega, target_omega] # omitting chaser_x, chaser_y, target_vx, target_vy
+        self.IRRELEVANT_STATES                = [2,3,5,9,10,11,15,16] # [relative_x, relative_y, relative_angle, chaser_x, chaser_y, chaser_theta, chaser_vx, chaser_vy, chaser_omega, target_omega] # omitting relative_vx, relative_vy, relative_omega, target_x, target_y, target_theta, target_vx, target_vy
         self.OBSERVATION_SIZE                 = self.TOTAL_STATE_SIZE - len(self.IRRELEVANT_STATES) # the size of the observation input to the policy
         self.ACTION_SIZE                      = 3 # [x_dot_dot, y_dot_dot, theta_dot_dot] in the BODY frame
         self.MAX_VELOCITY                     = 0.2 # [m/s]
@@ -102,7 +102,8 @@ class Environment:
             Pi_red_Vx, Pi_red_Vy, Pi_red_omega,        \
             Pi_black_x, Pi_black_y, Pi_black_theta,    \
             Pi_black_Vx, Pi_black_Vy, Pi_black_omega,  \
-            SPOTNet_relative_x, SPOTNet_relative_y, SPOTNet_relative_angle, SPOTNet_sees_target = data[0,:]
+            SPOTNet_relative_x, SPOTNet_relative_y, SPOTNet_relative_angle, SPOTNet_sees_target, \
+            SPOTNet_target_x_inertial, SPOTNet_target_y_inertial, SPOTNet_target_angle_inertial= data[0,:]
         
         
         self.INITIAL_CHASER_POSITION          = np.array([Pi_red_x, Pi_red_y, Pi_red_theta]) # [m, m, rad]
@@ -748,7 +749,7 @@ def dynamics_equations_of_motion(state, t, parameters):
 ##########################################
 ##### Function to animate the motion #####
 ##########################################
-def render(states, actions, instantaneous_reward_log, cumulative_reward_log, critic_distributions, target_critic_distributions, projected_target_distribution, bins, loss_log, episode_number, filename, save_directory, time_log):
+def render(states, actions, instantaneous_reward_log, cumulative_reward_log, critic_distributions, target_critic_distributions, projected_target_distribution, bins, loss_log, episode_number, filename, save_directory, time_log, SPOTNet_sees_target_log):
     """
     TOTAL_STATE = [relative_x, relative_y, relative_vx, relative_vy, relative_angle, relative_angular_velocity, chaser_x, chaser_y, chaser_theta, target_x, target_y, target_theta, chaser_vx, chaser_vy, chaser_omega, target_vx, target_vy, target_omega] *# Relative pose expressed in the chaser's body frame; everythign else in Inertial frame #*
      """   

@@ -17,8 +17,8 @@ class Settings:
 
     RUN_NAME               = 'strict_table_spin_chaser_xy_included'#'velocity_penalty50_gamma95_4piend_random_uniform'
     RESUME_TRAINING        = True # If True, main.py must be run from a previous run's 'code' folder.
-    ENVIRONMENT            = 'SPOT'
-    #ENVIRONMENT            = 'ICs'
+    #ENVIRONMENT            = 'SPOT'
+    ENVIRONMENT            = 'ICs'
     AGENT                  = ''
     RECORD_VIDEO           = True
     VIDEO_RECORD_FREQUENCY = 20 # 20 Multiples of "CHECK_GREEDY_PERFORMANCE_EVERY_NUM_EPISODES"
