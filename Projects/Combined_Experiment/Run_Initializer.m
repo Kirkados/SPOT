@@ -34,7 +34,7 @@ fprintf('|----------------------------------------------------------------|\n')
 %% User-defined constants:
 
 % Target angular velocity
-target_angular_velocity = 0.1; % [rad/s]
+target_angular_velocity = 0.05; % [rad/s]
 
 % Converting from degrees to radians and vis versa:
 
@@ -188,15 +188,15 @@ Pos_J3  = [primal.time'+42,primal.states(6,:)'];
 %%  Set the drop, initial, and home positions for each platform:
 
 
-drop_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
+drop_states_RED           = [ xLength/2+0.6; yLength/2; pi]; % [m; m; rad]
 drop_states_BLACK         = [ 0.6; 0.6; -pi/2];  % [m; m; rad]
 drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
-init_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
+init_states_RED           = [ xLength/2+0.6; yLength/2; pi]; % [m; m; rad]
 init_states_BLACK         = [ 0.6; 0.6; -pi/2];      % [m; m; rad]
 init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
-home_states_RED           = [ xLength/2+1.1; yLength/2; pi]; % [m; m; rad]
+home_states_RED           = [ xLength/2+0.6; yLength/2; pi]; % [m; m; rad]
 home_states_BLACK         = [ 0.6; 0.6; -pi/2];  % [m; m; rad]
 home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
                                               
