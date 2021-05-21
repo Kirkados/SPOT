@@ -36,6 +36,8 @@ fprintf('|----------------------------------------------------------------|\n')
 target_angular_velocity = 0.1;
 target_starting_angle = 0; % [rad] -> tune this for fairness
 
+joint_limit_buffer_angle = 6; % [deg] how early the arm will try and stop before reading 90 deg
+
 % Converting from degrees to radians and vis versa:
 
 d2r                            = pi/180;
