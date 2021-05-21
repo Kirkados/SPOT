@@ -104,7 +104,7 @@ baseRate                       = 1/10;      % 10 Hz
 % setting this equal to or higher then the baseRate causes the data to
 % buffer in the UDP send.
 
-serverRate                     = 1/5;       % 2 Hz
+serverRate                     = 1/5;       % 5 Hz
 
 %% Set the duration of each major phase in the experiment, in seconds:
 
