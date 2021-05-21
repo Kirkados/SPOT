@@ -1,5 +1,6 @@
 % This script analyzes expeirmental results
 
+close all
 
 figure()
 plot(rt_dataPacket(:,1),rt_dataPacket(:,65))
@@ -18,4 +19,5 @@ figure()
 plot(rt_dataPacket(:,1),rt_dataPacket(:,67))
 hold on;
 plot(rt_dataPacket(:,1),rt_dataPacket(:,70))
-legend('Alpha command', 'True Alpha')
+plot(rt_dataPacket(:,1),rt_dataPacket(:,10))
+legend('Alpha command', 'True Alpha', 'True Omega')
