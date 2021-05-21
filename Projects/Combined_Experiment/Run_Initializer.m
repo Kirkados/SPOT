@@ -35,7 +35,7 @@ fprintf('|----------------------------------------------------------------|\n')
 
 % Target angular velocity
 target_angular_velocity = 0.1; % [rad/s]
-target_starting_angle = pi/2; % [rad]
+target_starting_angle = 0; % [rad]
 
 % Converting from degrees to radians and vis versa:
 
@@ -103,7 +103,7 @@ baseRate                       = 1/10;      % 4 Hz
 % setting this equal to or higher then the baseRate causes the data to
 % buffer in the UDP send.
 
-serverRate                     = 1/2;       % 2 Hz
+serverRate                     = 1/5;       % 2 Hz
 
 %% Set the duration of each major phase in the experiment, in seconds:
 
