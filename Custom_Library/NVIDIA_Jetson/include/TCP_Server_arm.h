@@ -13,5 +13,5 @@ void run_guidance(const double input_1, const double input_2,
                 const double input_19, double* output_1, 
                 double* output_2, double* output_3,
 				double* output_4, double* output_5,
-				double* output_6);
+				double* output_6, bool* output_7);
 void terminate();

@@ -48,7 +48,7 @@ classdef guidance_server_arm < matlab.System ...
             end
         end
         
-        function [guided_acceleration_x, guided_acceleration_y, guided_angular_acceleration, guided_shoulder_acceleration, guided_elbow_acceleration, guided_wrist_acceleration] = stepImpl(~, time, red_x, red_y, red_angle, red_vx, red_vy, red_dangle,...
+        function [guided_acceleration_x, guided_acceleration_y, guided_angular_acceleration, guided_shoulder_acceleration, guided_elbow_acceleration, guided_wrist_acceleration, is_captured] = stepImpl(~, time, red_x, red_y, red_angle, red_vx, red_vy, red_dangle,...
             black_x, black_y, black_angle,black_vx, black_vy, black_dangle, shoulder_angle, elbow_angle, wrist_angle, shoulder_omega, elbow_omega, wrist_omega) 
             
             guided_acceleration_x = double(0);
@@ -57,6 +57,7 @@ classdef guidance_server_arm < matlab.System ...
             guided_shoulder_acceleration = double(0);
             guided_elbow_acceleration = double(0);
             guided_wrist_acceleration = double(0);
+            is_captured = boolean(false);
             
             if isempty(coder.target)
                 % Place simulation output code here 
@@ -64,7 +65,7 @@ classdef guidance_server_arm < matlab.System ...
                 % Call C-function implementing device output
                 %coder.ceval('sink_output',u);
                  coder.ceval("run_guidance", time, red_x, red_y, red_angle, red_vx, red_vy, red_dangle, black_x, black_y, black_angle, black_vx, black_vy, black_dangle, shoulder_angle, elbow_angle, wrist_angle, shoulder_omega, elbow_omega, wrist_omega, ... 
-                coder.ref(guided_acceleration_x), coder.ref(guided_acceleration_y), coder.ref(guided_angular_acceleration), coder.ref(guided_shoulder_acceleration), coder.ref(guided_elbow_acceleration), coder.ref(guided_wrist_acceleration));
+                coder.ref(guided_acceleration_x), coder.ref(guided_acceleration_y), coder.ref(guided_angular_acceleration), coder.ref(guided_shoulder_acceleration), coder.ref(guided_elbow_acceleration), coder.ref(guided_wrist_acceleration), coder.ref(is_captured));
                 
             end
         end
@@ -86,7 +87,7 @@ classdef guidance_server_arm < matlab.System ...
         end
         
         function num = getNumOutputsImpl(~)
-            num = 6;
+            num = 7;
         end
         
         function flag = isInputSizeLockedImpl(~,~)
@@ -108,6 +109,7 @@ classdef guidance_server_arm < matlab.System ...
             varargout{4} = true;
             varargout{5} = true;
             varargout{6} = true;
+            varargout{7} = true;
         end
         
         function flag = isInputComplexityLockedImpl(~,~)
@@ -121,6 +123,7 @@ classdef guidance_server_arm < matlab.System ...
             varargout{4} = [1,1];
             varargout{5} = [1,1];
             varargout{6} = [1,1];
+            varargout{7} = [1,1];
         end
         
         function varargout = getOutputDataTypeImpl(~)
@@ -130,6 +133,7 @@ classdef guidance_server_arm < matlab.System ...
             varargout{4} = 'double';
             varargout{5} = 'double';
             varargout{6} = 'double';
+            varargout{7} = 'boolean';
         end
         
         function varargout = isOutputComplexImpl(~)
@@ -139,6 +143,7 @@ classdef guidance_server_arm < matlab.System ...
             varargout{4} = false;
             varargout{5} = false;
             varargout{6} = false;
+            varargout{7} = false;
         end
         
         function icon = getIconImpl(~)
@@ -161,7 +166,7 @@ classdef guidance_server_arm < matlab.System ...
             header = matlab.system.display.Header('guidance_server','Title',...
                 'TCP Server','Text',...
                 ['This simulink block sends and receives data to and from the Jetson using a TCP/IP Server. '...
-                'This block should be used once. This version also sends and receives arm commands' newline]);
+                'This block should be used once. This version also sends and receives arm commands and returns whether the target has been captured.' newline]);
         end
         
     end
