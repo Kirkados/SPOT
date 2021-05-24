@@ -108,7 +108,7 @@ void initialize_dynamixel_position_control(double P_GAIN, double I_GAIN, double 
 
 }
 
-void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VELOCITY_LIMIT, double ACCELERATION_TIME)
+void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VELOCITY_LIMIT)
 {
 
     // Define the transmission failure code
@@ -126,7 +126,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
     // Set up the motors for velocity control
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_OPERATING_MODE, 1, &dxl_error); // Velocity mode
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 1, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
-    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    //dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 1, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
@@ -134,7 +134,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
         
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 2, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
-    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    //dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 2, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
@@ -142,7 +142,7 @@ void initialize_dynamixel_speed_control(double P_GAIN, double I_GAIN, double VEL
 
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_OPERATING_MODE, 1, &dxl_error);
     dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, 3, ADDR_MX_DRIVE_MODE, 4, &dxl_error); // Acceleration_profile yields the time required to reach goal velocity
-    dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
+    //dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_PROFILE_ACCELERATION, nearbyint(ACCELERATION_TIME), &dxl_error); // Acceleration time in [ms] required to reach goal velocity
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_P_GAIN, P_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write2ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_I_GAIN, I_GAIN, &dxl_error);
     dxl_comm_result = packetHandler->write4ByteTxRx(portHandler, 3, ADDR_MX_VELOCITY_LIMIT, VELOCITY_LIMIT, &dxl_error);
@@ -444,7 +444,7 @@ void read_dynamixel_load(double* JOINT1_LOAD, double* JOINT2_LOAD, double* JOINT
     groupBulkRead.clearParam();
 }
 
-void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD)
+void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, double JOINT3_SPD_RAD, double ACCELERATION_TIME)
 {
     // Define the transmission failure code
     int dxl_comm_result   = COMM_TX_FAIL;
@@ -452,6 +452,7 @@ void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, doubl
     uint8_t param_goal_speed_1[4];
     uint8_t param_goal_speed_2[4];
     uint8_t param_goal_speed_3[4];
+    uint8_t acceleration_time_bits[4];
 	
 	// Initialize the dxl_error variable
     uint8_t dxl_error = 0;
@@ -498,11 +499,19 @@ void command_dynamixel_speed(double JOINT1_SPD_RAD, double JOINT2_SPD_RAD, doubl
     param_goal_speed_3[1] = DXL_HIBYTE(DXL_LOWORD(JOINT3_SPD_BITS));
     param_goal_speed_3[2] = DXL_LOBYTE(DXL_HIWORD(JOINT3_SPD_BITS));
     param_goal_speed_3[3] = DXL_HIBYTE(DXL_HIWORD(JOINT3_SPD_BITS));
+
+    acceleration_time_bits[0] = DXL_LOBYTE(DXL_LOWORD(nearbyint(ACCELERATION_TIME)));
+    acceleration_time_bits[1] = DXL_HIBYTE(DXL_LOWORD(nearbyint(ACCELERATION_TIME)));
+    acceleration_time_bits[2] = DXL_LOBYTE(DXL_HIWORD(nearbyint(ACCELERATION_TIME)));
+    acceleration_time_bits[3] = DXL_HIBYTE(DXL_HIWORD(nearbyint(ACCELERATION_TIME)));
     		    
     // Send the goal velocity command
     dxl_addparam_result = groupBulkWrite.addParam(1, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_1);
+    dxl_addparam_result = groupBulkWrite.addParam(1, ADDR_MX_PROFILE_ACCELERATION, 4, acceleration_time_bits); // Acceleration time in [ms] required to reach goal velocity
     dxl_addparam_result = groupBulkWrite.addParam(2, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_2);
+    dxl_addparam_result = groupBulkWrite.addParam(2, ADDR_MX_PROFILE_ACCELERATION, 4, acceleration_time_bits); // Acceleration time in [ms] required to reach goal velocity
     dxl_addparam_result = groupBulkWrite.addParam(3, ADDR_MX_GOAL_SPEED, 4, param_goal_speed_3);
+    dxl_addparam_result = groupBulkWrite.addParam(3, ADDR_MX_PROFILE_ACCELERATION, 4, acceleration_time_bits); // Acceleration time in [ms] required to reach goal velocity
     
 	// Clean up
     dxl_comm_result = groupBulkWrite.txPacket();
