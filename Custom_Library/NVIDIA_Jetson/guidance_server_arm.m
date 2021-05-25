@@ -57,7 +57,7 @@ classdef guidance_server_arm < matlab.System ...
             guided_shoulder_acceleration = double(0);
             guided_elbow_acceleration = double(0);
             guided_wrist_acceleration = double(0);
-            is_captured = boolean(false);
+            is_captured = double(0);
             
             if isempty(coder.target)
                 % Place simulation output code here 
@@ -133,7 +133,7 @@ classdef guidance_server_arm < matlab.System ...
             varargout{4} = 'double';
             varargout{5} = 'double';
             varargout{6} = 'double';
-            varargout{7} = 'boolean';
+            varargout{7} = 'double';
         end
         
         function varargout = isOutputComplexImpl(~)
