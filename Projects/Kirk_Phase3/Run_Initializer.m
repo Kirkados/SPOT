@@ -36,7 +36,7 @@ fprintf('|----------------------------------------------------------------|\n')
 target_angular_velocity = 0.1;
 target_starting_angle = 0; % [rad] -> tune this for fairness
 joint_limit_buffer_angle = 6; % [deg] how early the arm will try and stop before reading 90 deg
-bring_arm_to_rest_time = 2; % [s] how long to spend gradually bringing the arm to rest after capture
+bring_arm_to_rest_time = 5; % [s] how long to spend gradually bringing the arm to rest after capture
 
 % Converting from degrees to radians and vis versa:
 
