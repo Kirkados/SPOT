@@ -138,7 +138,7 @@ class MessageParser:
                 
                 # Apply the offsets to the target
                 offsets_target_body = np.array([offset_x, offset_y])
-                offsets_target_inertial = np.matmul(make_C_bI(Pi_black_theta).T, offsets_target_body)
+                offsets_target_inertial = np.matmul(make_C_bI(self.Pi_black_theta).T, offsets_target_body)
                 self.Pi_black_x = self.Pi_black_x - offsets_target_inertial[0]
                 self.Pi_black_y = self.Pi_black_y - offsets_target_inertial[1]
                 self.Pi_black_theta = self.Pi_black_theta - offset_angle
@@ -164,7 +164,7 @@ class DeepGuidanceModelRunner:
         self.testing = testing
         
         # Initializing a variable to check if we've docked
-        self.have_we_docked = False
+        self.have_we_docked = 0.
                 
         # Holding the previous position so we know when SPOTNet gives a new update
         self.previousSPOTNet_relative_x = 0.0
@@ -252,7 +252,7 @@ class DeepGuidanceModelRunner:
             self.environment.check_collisions()
             
             # Ask the environment whether docking occurred
-            self.have_we_docked = self.environment.docked
+            self.have_we_docked = float(self.environment.docked)
             
             # Extracting end-effector position and docking port position in the Inertial frame
             end_effector_position = self.environment.end_effector_position
