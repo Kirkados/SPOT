@@ -38,6 +38,11 @@ target_starting_angle = 0; % [rad] -> tune this for fairness
 joint_limit_buffer_angle = 6; % [deg] how early the arm will try and stop before reading 90 deg
 bring_arm_to_rest_time = 5; % [s] how long to spend gradually bringing the arm to rest after capture
 
+% Arm limit parameters
+shoulder_max_omega = 10*pi/180; % [rad/s]
+elbow_max_omega = 10*pi/180; % [rad/s]
+wrist_max_omega = 10*pi/180; % [rad/s]
+
 % Converting from degrees to radians and vis versa:
 
 d2r                            = pi/180;
