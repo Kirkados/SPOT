@@ -33,15 +33,15 @@ fprintf('|----------------------------------------------------------------|\n')
 
 %% User-defined constants:
 
-target_angular_velocity = 0.1;
+target_angular_velocity = 0.;
 target_starting_angle = 0; % [rad] -> tune this for fairness
 joint_limit_buffer_angle = 6; % [deg] how early the arm will try and stop before reading 90 deg
-bring_arm_to_rest_time = 5; % [s] how long to spend gradually bringing the arm to rest after capture
+bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm to rest after capture
 
 % Arm limit parameters
-shoulder_max_omega = 10*pi/180; % [rad/s]
-elbow_max_omega = 10*pi/180; % [rad/s]
-wrist_max_omega = 10*pi/180; % [rad/s]
+shoulder_max_omega = 30*pi/180; % [rad/s]
+elbow_max_omega = 30*pi/180; % [rad/s]
+wrist_max_omega = 30*pi/180; % [rad/s]
 
 % Converting from degrees to radians and vis versa:
 
@@ -190,16 +190,16 @@ thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-5
 %%  Set the drop, initial, and home positions for each platform:
 
 
-drop_states_RED           = [ 0.6; 1.2; 0]; % [m; m; rad]
-drop_states_BLACK         = [ 2.6; 0.6; target_starting_angle];  % [m; m; rad]
+drop_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
+drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
 drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
-init_states_RED           = [ 0.6; 1.2; 0]; % [m; m; rad]
-init_states_BLACK         = [ 2.6; 0.6; target_starting_angle];      % [m; m; rad]
+init_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
+init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
 init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
-home_states_RED           = [ 0.6; 1.2; 0]; % [m; m; rad]
-home_states_BLACK         = [ 2.6; 0.6; target_starting_angle];  % [m; m; rad]
+home_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
+home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
 home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
                                               
 %% Start the graphical user interface:
