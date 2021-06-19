@@ -35,7 +35,7 @@ fprintf('|----------------------------------------------------------------|\n')
 
 target_angular_velocity = 0.;
 target_starting_angle = 0; % [rad] -> tune this for fairness
-joint_limit_buffer_angle = 6; % [deg] how early the arm will try and stop before reading 90 deg
+joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
 bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm to rest after capture
 
 % Arm limit parameters
@@ -115,7 +115,7 @@ serverRate                     = 1/5;       % 5 Hz
 
 Phase0_Duration                = 5;        % [s]
 Phase1_Duration                = 5;         % [s]
-Phase2_Duration                = 25;        % [s]
+Phase2_Duration                = 5;        % [s]
 Phase3_Duration                = 60;        % [s]
 Phase4_Duration                = 20;        % [s]
 Phase5_Duration                = 5;         % [s]
