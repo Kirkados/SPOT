@@ -16,8 +16,9 @@ class Settings:
     ########################
 
     RUN_NAME               = 'inertialAcceleration_noSpin_lowRandomization_highVel_rcdc'
-    RESUME_TRAINING        = False # If True, main.py must be run from a previous run's 'code' folder.
-    ENVIRONMENT            = 'manipulator' # 'quad1' for Task 1 velocity; 'quad1_accel' for Task 1 accel; 'quad1_runway' for Task 2 accel
+    RESUME_TRAINING        = True # If True, main.py must be run from a previous run's 'code' folder.
+    #ENVIRONMENT            = 'manipulator' # 'quad1' for Task 1 velocity; 'quad1_accel' for Task 1 accel; 'quad1_runway' for Task 2 accel
+    ENVIRONMENT            = 'fixedICs' # uncomment this 
     AGENT                  = '' # '' for Task 1, '_runway' for runway experiment
     RECORD_VIDEO           = True
     VIDEO_RECORD_FREQUENCY = 20 # Multiples of "CHECK_GREEDY_PERFORMANCE_EVERY_NUM_EPISODES"
