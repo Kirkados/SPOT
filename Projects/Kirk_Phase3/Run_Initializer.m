@@ -38,10 +38,22 @@ target_starting_angle = 0; % [rad] -> tune this for fairness
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
 bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm to rest after capture
 
+% Body limit parameters
+max_x_velocity = 0.1; % [m/s]
+max_y_velocity = 0.1; % [m/s]
+max_body_omega = 15*pi/180; % [rad/s]
+
 % Arm limit parameters
 shoulder_max_omega = 30*pi/180; % [rad/s]
 elbow_max_omega = 30*pi/180; % [rad/s]
 wrist_max_omega = 30*pi/180; % [rad/s]
+
+% Velocity PI controller gains
+Kp_vel_PI = 50; %50
+KI_vel_PI = 0; %0 
+
+Kp_vel_PI_theta = 0.9;
+KI_vel_PI_theta = 0;
 
 % Converting from degrees to radians and vis versa:
 
