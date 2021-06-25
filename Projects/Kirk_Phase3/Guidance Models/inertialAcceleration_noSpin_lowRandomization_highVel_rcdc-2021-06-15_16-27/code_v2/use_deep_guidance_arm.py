@@ -184,17 +184,17 @@ class DeepGuidanceModelRunner:
         #tf.compat.v1.disable_eager_execution()
         
         # Clear any old graph
-        tf.reset_default_graph()
+        tf.compat.v1.reset_default_graph()
         
         # Initialize Tensorflow, and load in policy
-        self.sess = tf.Session()
+        self.sess = tf.compat.v1.Session()
         # Building the policy network
-        self.state_placeholder = tf.placeholder(dtype = tf.float32, shape = [None, Settings.OBSERVATION_SIZE], name = "state_placeholder")
+        self.state_placeholder = tf.compat.v1.placeholder(dtype = tf.float32, shape = [None, Settings.OBSERVATION_SIZE], name = "state_placeholder")
         self.actor = BuildActorNetwork(self.state_placeholder, scope='learner_actor_main')
     
         # Loading in trained network weights
         print("Attempting to load in previously-trained model\n")
-        saver = tf.train.Saver() # initialize the tensorflow Saver()
+        saver = tf.compat.v1.train.Saver() # initialize the tensorflow Saver()
     
         # Try to load in policy network parameters
         try:

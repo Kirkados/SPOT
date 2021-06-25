@@ -1,7 +1,7 @@
 % This script analyzes expeirmental results
 
 % If it's a simulation
-rt_dataPacket = dataPacket;
+%rt_dataPacket = dataPacket;
 
 close all
 

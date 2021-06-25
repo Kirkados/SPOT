@@ -49,10 +49,10 @@ elbow_max_omega = 30*pi/180; % [rad/s]
 wrist_max_omega = 30*pi/180; % [rad/s]
 
 % Velocity PI controller gains
-Kp_vel_PI = 50; %50
+Kp_vel_PI = 40; %50
 KI_vel_PI = 0; %0 
 
-Kp_vel_PI_theta = 0.9;
+Kp_vel_PI_theta = 0.6;
 KI_vel_PI_theta = 0;
 
 % Converting from degrees to radians and vis versa:
@@ -127,7 +127,7 @@ serverRate                     = 1/5;       % 5 Hz
 
 Phase0_Duration                = 5;        % [s]
 Phase1_Duration                = 5;         % [s]
-Phase2_Duration                = 5;        % [s]
+Phase2_Duration                = 25;        % [s]
 Phase3_Duration                = 60;        % [s]
 Phase4_Duration                = 20;        % [s]
 Phase5_Duration                = 5;         % [s]
