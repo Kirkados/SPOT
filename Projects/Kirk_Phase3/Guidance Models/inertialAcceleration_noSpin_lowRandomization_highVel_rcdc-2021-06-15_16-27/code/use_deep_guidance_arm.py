@@ -33,6 +33,10 @@ Deep guidance output in x and y are in the chaser body frame
 # Are we testing?
 testing = False
 
+CHECK_VELOCITY_LIMITS_IN_PYTHON = False
+HARD_CODE_TARGET_SPIN_TO_ZERO = True
+
+
 ###############################
 ### User-defined parameters ###
 ###############################
@@ -135,6 +139,9 @@ class MessageParser:
                 # We received a packet from the Pi
                 # input_data_array is: [time, red_x, red_y, red_angle, red_vx, red_vy, red_dangle, black_x, black_y, black_angle, black_vx, black_vy, black_dangle, shoulder_angle, elbow_angle, wrist_angle, shoulder_omega, elbow_omega, wrist_omega]  
                 self.Pi_time, self.Pi_red_x, self.Pi_red_y, self.Pi_red_theta, self.Pi_red_Vx, self.Pi_red_Vy, self.Pi_red_omega, self.Pi_black_x, self.Pi_black_y, self.Pi_black_theta, self.Pi_black_Vx, self.Pi_black_Vy, self.Pi_black_omega, self.shoulder_theta, self.elbow_theta, self.wrist_theta, self.shoulder_omega, self.elbow_omega, self.wrist_omega = data_packet.astype(np.float32)
+                
+                if HARD_CODE_TARGET_SPIN_TO_ZERO:
+                    self.Pi_black_omega = 0.0
                 
                 # Apply the offsets to the target
                 offsets_target_body = np.array([offset_x, offset_y])
@@ -263,19 +270,13 @@ class DeepGuidanceModelRunner:
             docking_error_target_body = np.matmul(make_C_bI(Pi_black_theta), docking_error_inertial)
             print("Distance from cone to end-effector in target body frame: ", docking_error_target_body, " Environment thinks we've docked: ", self.have_we_docked, " with offsets: ", offset_x, offset_y, offset_angle)
             
-
             
             #################################
             ### Building the Policy Input ###
             ################################# 
-            # Calculating the relative X and Y in the chaser's body frame using PhaseSpace
-            relative_pose_inertial = np.array([Pi_black_x - Pi_red_x, Pi_black_y - Pi_red_y])
-            relative_pose_body = np.matmul(make_C_bI(Pi_red_theta), relative_pose_inertial)
+            total_state = self.environment.make_total_state()
+            policy_input = np.delete(total_state, Settings.IRRELEVANT_STATES)
             
-            # [chaser_x, chaser_y, chaser_theta, chaser_x_dot, chaser_y_dot, chaser_theta_dot, shoulder_theta, elbow_theta, wrist_theta, shoulder_theta_dot, elbow_theta_dot, wrist_theta_dot, target_theta_dot, relative_x_b, relative_y_b, relative_theta]
-            policy_input = np.array([Pi_red_x, Pi_red_y, Pi_red_theta, Pi_red_Vx, Pi_red_Vy, Pi_red_omega, shoulder_theta, elbow_theta, wrist_theta, shoulder_omega, elbow_omega, wrist_omega, Pi_black_omega, relative_pose_body[0], relative_pose_body[1], (Pi_black_theta - Pi_red_theta)%(2*np.pi)])
-
-                    
             # Normalizing            
             if Settings.NORMALIZE_STATE:
                 normalized_policy_input = (policy_input - relevant_state_mean)/relevant_half_range
@@ -289,8 +290,9 @@ class DeepGuidanceModelRunner:
             deep_guidance = self.sess.run(self.actor.action_scaled, feed_dict={self.state_placeholder:normalized_policy_input})[0] # [accel_x, accel_y, alpha]
             
             # Rotating the command into the inertial frame
-            deep_guidance[0:2] = np.matmul(make_C_bI(Pi_red_theta).T,deep_guidance[0:2])
-     
+            if not Settings.ACTIONS_IN_INERTIAL:
+                deep_guidance[0:2] = np.matmul(make_C_bI(Pi_red_theta).T,deep_guidance[0:2])
+                     
             # Commanding constant values in the inertial frame for testing purposes
             if DEBUG_CONTROLLER_WITH_CONSTANT_ACCELERATIONS:                
                 deep_guidance[0] = constant_Ax # [m/s^2]
@@ -303,14 +305,12 @@ class DeepGuidanceModelRunner:
             #################################################################
             ### Cap output if we are exceeding the max allowable velocity ###
             #################################################################
-            # Checking whether our velocity is too large AND the acceleration is trying to increase said velocity... in which case we set the desired_linear_acceleration to zero.
-    			# this is in the inertial frame			
-
             # Stopping the command of additional velocity when we are already at our maximum
-            """ This check, among others, has been transferred to Simulink - June 1, 2021 """
-            #current_velocity = np.array([Pi_red_Vx, Pi_red_Vy, Pi_red_omega, shoulder_omega, elbow_omega, wrist_omega])        
-            #deep_guidance[(np.abs(current_velocity) > Settings.VELOCITY_LIMIT) & (np.sign(deep_guidance) == np.sign(current_velocity))] = 0
-
+            """ The check for arm velocity exceeding has been transferred to Simulink - June 1, 2021 """
+            if CHECK_VELOCITY_LIMITS_IN_PYTHON:                    
+                current_velocity = np.array([Pi_red_Vx, Pi_red_Vy, Pi_red_omega])               
+                deep_guidance[:len(current_velocity)][(np.abs(current_velocity) > Settings.VELOCITY_LIMIT[:len(current_velocity)]) & (np.sign(deep_guidance[:len(current_velocity)]) == np.sign(current_velocity))] = 0
+                        
             # Return commanded action to the Raspberry Pi 3
             if self.testing:
                 print(deep_guidance)                
