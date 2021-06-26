@@ -15,9 +15,10 @@ class Settings:
     ##### Run Settings #####
     ########################
 
-    RUN_NAME               = 'inertialAcceleration_noSpin_lowRandomization_highVel_rcdc'
+    RUN_NAME               = 'inertialAcceleration_SPIN_lowRandomization_wrapped_rcdc'
     RESUME_TRAINING        = True # If True, main.py must be run from a previous run's 'code' folder.
-    ENVIRONMENT            = 'manipulator' # 'quad1' for Task 1 velocity; 'quad1_accel' for Task 1 accel; 'quad1_runway' for Task 2 accel
+    #ENVIRONMENT            = 'manipulator' # uncomment for regular training
+    ENVIRONMENT            = 'fixedICs' # uncomment this option for testing what would have occurred from given initial conditions (also set RESUME_TRAINING to True)
     AGENT                  = '' # '' for Task 1, '_runway' for runway experiment
     RECORD_VIDEO           = True
     VIDEO_RECORD_FREQUENCY = 20 # Multiples of "CHECK_GREEDY_PERFORMANCE_EVERY_NUM_EPISODES"
@@ -121,7 +122,7 @@ class Settings:
     TOTAL_STATE_SIZE                 = env.TOTAL_STATE_SIZE
     AUGMENT_STATE_WITH_ACTION_LENGTH = env.AUGMENT_STATE_WITH_ACTION_LENGTH
     VELOCITY_LIMIT                   = env.VELOCITY_LIMIT  
-    ACTIONS_IN_INERTIAL              = env.ACTIONS_IN_INERTIAL	
+    ACTIONS_IN_INERTIAL              = env.ACTIONS_IN_INERTIAL
     
     # Delete the test environment
     del env
