@@ -34,7 +34,7 @@ fprintf('|----------------------------------------------------------------|\n')
 %% User-defined constants:
 
 target_angular_velocity = 0.;
-target_starting_angle = 0; % [rad] -> tune this for fairness
+target_starting_angle = -pi/2; % [rad] -> tune this for fairness
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
 bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm to rest after capture
 
