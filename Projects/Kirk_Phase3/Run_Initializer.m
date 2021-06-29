@@ -33,20 +33,28 @@ fprintf('|----------------------------------------------------------------|\n')
 
 %% User-defined constants:
 
+% Arm initial conditions (only used when running Set_arm_angles)
+initial_shoulder_angle = 0*pi/180; % [rad]
+initial_elbow_angle = 0*pi/180; % [rad]
+initial_wrist_angle = 0*pi/180; % [rad]
+
+% Target parameters
 target_angular_velocity = 0.;
 target_starting_angle = -pi/2; % [rad] -> tune this for fairness
-joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
-bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm to rest after capture
 
-% Body limit parameters
+% Body speed limit parameters
 max_x_velocity = 0.1; % [m/s]
 max_y_velocity = 0.1; % [m/s]
 max_body_omega = 15*pi/180; % [rad/s]
 
-% Arm limit parameters
+% Arm speed limit parameters
 shoulder_max_omega = 30*pi/180; % [rad/s]
 elbow_max_omega = 30*pi/180; % [rad/s]
 wrist_max_omega = 30*pi/180; % [rad/s]
+
+% Arm limit and post-capture parameters
+joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
+bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm to rest after capture
 
 % Velocity PI controller gains
 Kp_vel_PI = 40; %50
