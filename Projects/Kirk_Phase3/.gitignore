@@ -6,3 +6,4 @@ slprj/
 *ert_rtw/
 test
 *code_v2/
+__pycache__/
