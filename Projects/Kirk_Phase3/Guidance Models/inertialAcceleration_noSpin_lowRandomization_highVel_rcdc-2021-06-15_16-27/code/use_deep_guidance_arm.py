@@ -31,7 +31,7 @@ Deep guidance output in x and y are in the chaser body frame
 """
 
 # Are we testing?
-testing = False
+testing = True
 
 CHECK_VELOCITY_LIMITS_IN_PYTHON = False
 HARD_CODE_TARGET_SPIN_TO_ZERO = True
@@ -45,7 +45,7 @@ offset_y = 0.0 # Position offset of the target in its body frame
 offset_angle = 0 # Angle offset of the target in its body frame
 
 # Do you want to debug with constant accelerations?
-DEBUG_CONTROLLER_WITH_CONSTANT_ACCELERATIONS = True
+DEBUG_CONTROLLER_WITH_CONSTANT_ACCELERATIONS = False
 constant_Ax = 0.01 # [m/s^2] in inertial frame
 constant_Ay = -0.005 # [m/s^2] in inertial frame
 constant_alpha = 0.035 # [rad/s^2] in inertial frame
@@ -203,7 +203,7 @@ class DeepGuidanceModelRunner:
             print("\nModel successfully loaded!\n")
     
         except (ValueError, AttributeError):
-            print("No model found... quitting :(")
+            print("Model: ", ckpt.model_checkpoint_path, " not found... :(")
             raise SystemExit
         
         print("Done initializing model!")

@@ -422,8 +422,9 @@ class Agent:
                     summary = self.sess.run(self.regular_episode_summary_docked,     feed_dict = feed_dict)
                 else:
                     summary = self.sess.run(self.regular_episode_summary_not_docked, feed_dict = feed_dict)
-                    
-            self.writer.add_summary(summary, episode_number)
+            
+            if Settings.ENVIRONMENT != 'fixedICs':
+                self.writer.add_summary(summary, episode_number)
 
             # Increment the episode counter
             episode_number += 1
