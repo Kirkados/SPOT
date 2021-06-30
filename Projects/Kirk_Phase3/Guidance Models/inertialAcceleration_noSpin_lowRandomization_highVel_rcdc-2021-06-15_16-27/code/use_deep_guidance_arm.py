@@ -22,6 +22,8 @@ from collections import deque
 from settings import Settings
 from build_neural_networks import BuildActorNetwork
 
+assert Settings.ENVIRONMENT == 'manipulator'
+
 # Load an environment to use methods from
 environment_file = __import__('environment_' + Settings.ENVIRONMENT) # importing the environment
 
@@ -31,7 +33,7 @@ Deep guidance output in x and y are in the chaser body frame
 """
 
 # Are we testing?
-testing = True
+testing = False
 
 CHECK_VELOCITY_LIMITS_IN_PYTHON = False
 HARD_CODE_TARGET_SPIN_TO_ZERO = True
@@ -46,9 +48,9 @@ offset_angle = 0 # Angle offset of the target in its body frame
 
 # Do you want to debug with constant accelerations?
 DEBUG_CONTROLLER_WITH_CONSTANT_ACCELERATIONS = False
-constant_Ax = 0.01 # [m/s^2] in inertial frame
-constant_Ay = -0.005 # [m/s^2] in inertial frame
-constant_alpha = 0.035 # [rad/s^2] in inertial frame
+constant_Ax = 0 # [m/s^2] in inertial frame
+constant_Ay = 0 # [m/s^2] in inertial frame
+constant_alpha = 0 # [rad/s^2] in inertial frame
 constant_alpha_shoulder = 0 # [rad/s^2]
 constant_alpha_elbow = 0# [rad/s^2]
 constant_alpha_wrist = 0# [rad/s^2]
