@@ -40,7 +40,7 @@ initial_wrist_angle = 0*pi/180; % [rad]
 
 % Target parameters
 target_angular_velocity = 0.;
-target_starting_angle = -pi/2; % [rad] -> tune this for fairness
+target_starting_angle = 0; % [rad] -> tune this for fairness
 
 % Body speed limit parameters
 max_x_velocity = 0.1; % [m/s]
