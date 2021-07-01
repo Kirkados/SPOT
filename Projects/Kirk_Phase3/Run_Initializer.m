@@ -63,6 +63,33 @@ KI_vel_PI = 0; %0
 Kp_vel_PI_theta = 0.6;
 KI_vel_PI_theta = 0;
 
+% Physical chaser parameters for the feedforward controller (See Fig. 3.1 in Alex Cran's MASc Thesis for definitions)
+phi      = 68.2840*pi/180;
+b0       = 0.2304;
+m0     = 16.9478;
+m1       = 0.3377;
+m2       = 0.3281;
+m3       = 0.0111;
+a1       = 0.1933;
+b1       = 0.1117;
+a2       = 0.1993;
+b2       = 0.1057;
+a3       = 0.0621;
+b3       = 0.0159;
+I0 = 2.873E-1;
+I1 = 3.750E-3;
+I2 = 3.413E-3;
+I3 = 5.640E-5;
+
+
+
+
+
+
+
+
+
+
 % Converting from degrees to radians and vis versa:
 
 d2r                            = pi/180;
