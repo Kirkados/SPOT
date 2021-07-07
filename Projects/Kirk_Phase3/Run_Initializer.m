@@ -33,6 +33,9 @@ fprintf('|----------------------------------------------------------------|\n')
 
 %% User-defined constants:
 
+% The folder name of the model used (where the physical parameters will be pulled from)
+model_folder = 'inertialAcceleration_noSpin_lowRandomization_highVel_rcdc-2021-06-15_16-27';
+
 % Arm initial conditions (only used when running Set_arm_angles)
 initial_shoulder_angle = 0*pi/180; % [rad]
 initial_elbow_angle = 0*pi/180; % [rad]
@@ -63,32 +66,90 @@ KI_vel_PI = 0; %0
 Kp_vel_PI_theta = 0.6;
 KI_vel_PI_theta = 0;
 
-% Physical chaser parameters for the feedforward controller (See Fig. 3.1 in Alex Cran's MASc Thesis for definitions)
-phi      = 68.2840*pi/180;
-b0       = 0.2304;
-m0     = 16.9478;
-m1       = 0.3377;
-m2       = 0.3281;
-m3       = 0.0111;
-a1       = 0.1933;
-b1       = 0.1117;
-a2       = 0.1993;
-b2       = 0.1057;
-a3       = 0.0621;
-b3       = 0.0159;
-I0 = 0.35; %2.873E-1;
-I1 = 3.750E-3;
-I2 = 3.413E-3;
-I3 = 5.640E-5;
 
+% Loading in mass properties from the relevant Python environment for use in the feedforward controller
+fileID = fopen(strcat('Guidance Models/', model_folder, '/code/environment_manipulator.py'));
+environment_file = fscanf(fileID,'%s');
 
+value = 'self.PHI';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+phi = str2double(erase(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2),'np.'));
 
+value = 'self.B0';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+b0 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
 
+value = 'self.MASS';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+m0 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
 
+value = 'self.M1';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+m1 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
 
+value = 'self.M2';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+m2 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
 
+value = 'self.M3';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+m3 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
 
+value = 'self.A1';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+a1 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
 
+value = 'self.B1';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+b1 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.A2';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+a2 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.B2';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+b2 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.A3';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+a3 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.B3';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+b3 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.INERTIA';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+I0 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.INERTIA1';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+I1 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.INERTIA2';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+I2 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+
+value = 'self.INERTIA3';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+I3 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
 
 % Converting from degrees to radians and vis versa:
 
