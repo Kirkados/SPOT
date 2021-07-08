@@ -74,7 +74,7 @@ environment_file = fscanf(fileID,'%s');
 value = 'self.PHI';
 search_start = strfind(environment_file,value);
 search_end = strfind(environment_file(search_start(1):end),'#');
-phi = str2double(erase(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2),'np.'));
+phi = str2num(erase(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2),'np.'));
 
 value = 'self.B0';
 search_start = strfind(environment_file,value);
@@ -135,6 +135,7 @@ value = 'self.INERTIA';
 search_start = strfind(environment_file,value);
 search_end = strfind(environment_file(search_start(1):end),'#');
 I0 = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+I0 = 0.35
 
 value = 'self.INERTIA1';
 search_start = strfind(environment_file,value);
