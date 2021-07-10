@@ -91,7 +91,7 @@ import matplotlib.animation as animation
 import matplotlib.gridspec as gridspec
 from shapely.geometry import Point, Polygon # for collision detection
 
-DATA_FILE_TIME = '30-36' # a unique identifier of the data file we wish to use for initial conditions. Usually two time entries will do
+DATA_FILE_TIME = '49-59' # a unique identifier of the data file we wish to use for initial conditions. Usually two time entries will do
 
 class Environment:
 

@@ -16,9 +16,9 @@ figure()
 plot(rt_dataPacket(:,1),rt_dataPacket(:,66))
 hold on;
 plot(rt_dataPacket(:,1),rt_dataPacket(:,72))
-yyaxis right
-plot(rt_dataPacket(:,1),rt_dataPacket(:,3))
-plot(rt_dataPacket(:,1),rt_dataPacket(:,89))
+%yyaxis right
+%plot(rt_dataPacket(:,1),rt_dataPacket(:,3))
+%plot(rt_dataPacket(:,1),rt_dataPacket(:,89))
 legend('Accel Y command', 'True Ay', 'F_y sat', 'F_y')
 
 figure()

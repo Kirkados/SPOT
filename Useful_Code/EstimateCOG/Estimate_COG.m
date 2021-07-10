@@ -4,9 +4,9 @@ clear;
 clc;
 close('all')
 
-Ab = 5553.80/1000; % Front where the port is
-Bb = 2853.40/1000; % Right, where the power switch is
-Cb = 3926.90/1000; % Left, opposite from the power switch
+Ab = 5553.80/1000; % Left-middle-edge
+Bb = 2853.40/1000; % Right-back corner
+Cb = 3926.90/1000; % Right-front-corner
 
 Mb = Ab+Bb+Cb;
 
@@ -18,11 +18,11 @@ Wb = Ab+Bb+Cb;
 
 fprintf('The total mass for black is: %.4f kg.\n',Mb);
 
-Lb = 0.3;
-Db = 0.3;
+A_to_lineBC_distance = 0.3;
+BC_distance = 0.3;
 
-Yb = 0.15-((((Bb+Cb)*Lb)/Wb));
-Xb = ((Cb-Bb)*Db)/(2*Wb);
+Yb = 0.15-((((Bb+Cb)*A_to_lineBC_distance)/Wb));
+Xb = ((Cb-Bb)*BC_distance)/(2*Wb);
 
 fprintf('The XCG for black is: %.4f m.\n',Xb);
 fprintf('The YCG for black is: %.4f m.\n',Yb);
