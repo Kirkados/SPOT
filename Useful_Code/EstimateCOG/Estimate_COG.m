@@ -6,7 +6,7 @@ clear;
 clc;
 close('all')
 
-% User enter mass measurements
+% Black with panels and an air tank * USER ENTERED DATA *
 Ab = 5867/1000; % [kg] Left-middle-edge
 Bb = 2755/1000; % [kg] Right-back corner
 Cb = 3417/1000; % [kg] Right-front corner
@@ -113,10 +113,25 @@ fprintf('\nBlack''s docking port is %.4f m in X and %.4f m in Y from its centre 
 
 
 
-% Mass with shoulder motor, air tank, and NO panels * USER ENTERED DATA
+% Red Configuration #1: NO panels; Air tank; NO arm; YES shoulder motor
 Ar = 5442/1000; % [kg] Left-middle-edge
 Br = 2343/1000; % [kg] Right-back corner
 Cr = 3426/1000; % [kg] Right-front corner
+
+% Red Configuration #2: NO panels; Air tank; NO arm; NO shoulder motor
+Ar = 5056/1000; % [kg] Left-middle-edge
+Br = 2459/1000; % [kg] Right-back corner
+Cr = 3361/1000; % [kg] Right-front corner
+
+% Red Configuration #3: YES panels; Air tank; NO arm; NOshoulder motor
+Ar = 6067/1000; % [kg] Left-middle-edge
+Br = 2953/1000; % [kg] Right-back corner
+Cr = 3714/1000; % [kg] Right-front corner
+
+% Red Configuration #4: YES panels; Air tank; NO arm; YES shoulder motor
+Ar = 6465/1000; % [kg] Left-middle-edge
+Br = 2843/1000; % [kg] Right-back corner
+Cr = 3764/1000; % [kg] Right-front corner
 
 
 Mr = Ar+Br+Cr;
@@ -202,9 +217,22 @@ thruster_dist2CG_RED   = [ Thr1R
                        
                        
 % Calculating Red's inertia using the bifilar pendulum * USER ENTERED VALUES
+
+% Red Configuration #1: NO panels; Air tank; NO arm; YES shoulder motor
 tauR = 3.0822; % [s] period of oscillation
-distance_between_cords_red = 0.28; % [m]
 length_of_cord_red = 2.566; % [m]
+% Red Configuration #2: NO panels; Air tank; NO arm; NO shoulder motor
+tauR = 2.9467; % [s] period of oscillation
+length_of_cord_red = 2.495; % [m]
+% Red Configuration #3: YES panels; Air tank; NO arm; NOshoulder motor
+tauR = 2.9778; % [s] period of oscillation
+length_of_cord_red = 2.49; % [m]
+% Red Configuration #4: YES panels; Air tank; NO arm; YES shoulder motor
+tauR = 3.0667; % [s] period of oscillation
+length_of_cord_red = 2.49; % [m]
+
+
+distance_between_cords_red = 0.28; % [m]
 
 inertia_red_bifilar = tauR^2 * Mr * 9.81 * distance_between_cords_red^2 / (16*pi^2 * length_of_cord_red);
 fprintf('\nRed bifilar estimate of moment of inertia is %f kg m^2\n',inertia_red_bifilar);
