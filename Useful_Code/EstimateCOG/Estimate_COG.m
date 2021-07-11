@@ -113,25 +113,25 @@ fprintf('\nBlack''s docking port is %.4f m in X and %.4f m in Y from its centre 
 
 
 
-% Red Configuration #1: NO panels; Air tank; NO arm; YES shoulder motor
+% Red Configuration #1: NO panels; Air tank; NO arm; YES shoulder motor; NO wheel
 Ar = 5442/1000; % [kg] Left-middle-edge
 Br = 2343/1000; % [kg] Right-back corner
 Cr = 3426/1000; % [kg] Right-front corner
 
-% Red Configuration #2: NO panels; Air tank; NO arm; NO shoulder motor
-Ar = 5056/1000; % [kg] Left-middle-edge
-Br = 2459/1000; % [kg] Right-back corner
-Cr = 3361/1000; % [kg] Right-front corner
+% Red Configuration #2: NO panels; Air tank; NO arm; NO shoulder motor; NO wheel
+% Ar = 5056/1000; % [kg] Left-middle-edge
+% Br = 2459/1000; % [kg] Right-back corner
+% Cr = 3361/1000; % [kg] Right-front corner
 
-% Red Configuration #3: YES panels; Air tank; NO arm; NOshoulder motor
-Ar = 6067/1000; % [kg] Left-middle-edge
-Br = 2953/1000; % [kg] Right-back corner
-Cr = 3714/1000; % [kg] Right-front corner
+% Red Configuration #3: YES panels; Air tank; NO arm; NOshoulder motor; NO wheel
+% Ar = 6067/1000; % [kg] Left-middle-edge
+% Br = 2953/1000; % [kg] Right-back corner
+% Cr = 3714/1000; % [kg] Right-front corner
 
-% Red Configuration #4: YES panels; Air tank; NO arm; YES shoulder motor
-Ar = 6465/1000; % [kg] Left-middle-edge
-Br = 2843/1000; % [kg] Right-back corner
-Cr = 3764/1000; % [kg] Right-front corner
+% Red Configuration #4: YES panels; Air tank; NO arm; YES shoulder motor; NO wheel
+% Ar = 6465/1000; % [kg] Left-middle-edge
+% Br = 2843/1000; % [kg] Right-back corner
+% Cr = 3764/1000; % [kg] Right-front corner
 
 
 Mr = Ar+Br+Cr;
@@ -218,18 +218,18 @@ thruster_dist2CG_RED   = [ Thr1R
                        
 % Calculating Red's inertia using the bifilar pendulum * USER ENTERED VALUES
 
-% Red Configuration #1: NO panels; Air tank; NO arm; YES shoulder motor
+% Red Configuration #1: NO panels; Air tank; NO arm; YES shoulder motor; NO wheel
 tauR = 3.0822; % [s] period of oscillation
 length_of_cord_red = 2.566; % [m]
-% Red Configuration #2: NO panels; Air tank; NO arm; NO shoulder motor
-tauR = 2.9467; % [s] period of oscillation
-length_of_cord_red = 2.495; % [m]
-% Red Configuration #3: YES panels; Air tank; NO arm; NOshoulder motor
-tauR = 2.9778; % [s] period of oscillation
-length_of_cord_red = 2.49; % [m]
-% Red Configuration #4: YES panels; Air tank; NO arm; YES shoulder motor
-tauR = 3.0667; % [s] period of oscillation
-length_of_cord_red = 2.49; % [m]
+% Red Configuration #2: NO panels; Air tank; NO arm; NO shoulder motor; NO wheel
+% tauR = 2.9467; % [s] period of oscillation
+% length_of_cord_red = 2.495; % [m]
+% Red Configuration #3: YES panels; Air tank; NO arm; NO shoulder motor; NO wheel
+% tauR = 2.9778; % [s] period of oscillation
+% length_of_cord_red = 2.49; % [m]
+% Red Configuration #4: YES panels; Air tank; NO arm; YES shoulder motor; NO wheel
+% tauR = 3.0667; % [s] period of oscillation
+% length_of_cord_red = 2.49; % [m]
 
 
 distance_between_cords_red = 0.28; % [m]
