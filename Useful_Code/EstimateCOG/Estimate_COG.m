@@ -247,8 +247,61 @@ b0 = norm([shoulder_x,shoulder_y]);
 phi = atan2d(shoulder_y,shoulder_x);
 
 fprintf('\nRed''s shoulder (IC for first link) is %.4f m in X and %.4f m in Y from its centre of mass.\n', [shoulder_x,shoulder_y]);
-fprintf('Alternatively, B0 = %.4f and \phi = %.4f\n', [b0, phi]);
+fprintf('Alternatively, B0 = %.4f m and phi = %.4f deg\n', [b0, phi]);
 
+
+% Red properties complete, calculating arm properties next
+
+% Bicep properties
+A_bi = 122/1000; % [kg] mass measured at root of bicep segment
+B_bi = 223/1000; % [kg] mass measured at end of bicep segment
+L_bi = 0.3045; % [m] length of segment
+
+M_bi = A_bi + B_bi;
+b1 = A_bi*L_bi/M_bi;
+a1 = L_bi - b1;
+% Calculating inertia using the bifilar pendulum * USER ENTERED VALUES
+tau_bi = 2.2689; % [s] period of oscillation
+distance_between_cords_bi = 0.28; % [m]
+length_of_cord_bi = 2.335; % [m]
+inertia_bi_bifilar = tau_bi^2 * M_bi * 9.81 * distance_between_cords_bi^2 / (16*pi^2 * length_of_cord_bi);
+fprintf('\nBicep mass: %f kg; a1: %f m; b1: %f m; inertia: %f kgm^2\n',[M_bi, a1, b1, inertia_bi_bifilar])
+
+
+% Forearm properties
+A_fa = 117/1000; % [kg] mass measured at root of bicep segment
+B_fa = 218/1000; % [kg] mass measured at end of bicep segment
+L_fa = 0.3045; % [m] length of segment
+
+M_fa = A_fa + B_fa;
+b2 = A_fa*L_fa/M_fa;
+a2 = L_fa - b2;
+% Calculating inertia using the bifilar pendulum * USER ENTERED VALUES
+tau_fa = 2.24; % [s] period of oscillation
+distance_between_cords_fa = 0.28; % [m]
+length_of_cord_fa = 2.335; % [m]
+inertia_fa_bifilar = tau_fa^2 * M_fa * 9.81 * distance_between_cords_fa^2 / (16*pi^2 * length_of_cord_fa);
+fprintf('Forearm mass: %f kg; a2: %f m; b2: %f m; inertia: %f kgm^2\n',[M_fa, a2, b2, inertia_fa_bifilar])
+
+
+% End-effector properties
+A_ee = 32/1000; % [kg] mass measured at root of bicep segment
+B_ee = 79/1000; % [kg] mass measured at end of bicep segment
+L_ee = 0.08725; % [m] length of segment
+
+M_ee = A_ee + B_ee;
+b3 = A_ee*L_ee/M_ee;
+a3 = L_ee - b3;
+% Calculating inertia using the bifilar pendulum * USER ENTERED VALUES
+tau_ee = 2.205; % [s] period of oscillation
+distance_between_cords_ee = 0.075; % [m]
+length_of_cord_ee = 1.78; % [m]
+inertia_ee_bifilar = tau_ee^2 * M_ee * 9.81 * distance_between_cords_ee^2 / (16*pi^2 * length_of_cord_ee);
+fprintf('End-effector mass: %f kg; a3: %f m; b3: %f m; inertia: %f kgm^2',[M_ee, a3, b3, inertia_ee_bifilar])
+
+
+% Done with arm measurements. Printing specific things to screen for easier
+% transcribing to Matlab
 
 fprintf('\n\n\nCOPY THE FOLLOWING TO phasespace_functions.cpp\n');
 fprintf('tracker_id_RED_5_pos_string = "pos=%f,%f,0";\n',[LED5x*1000,LED5y*1000]);
