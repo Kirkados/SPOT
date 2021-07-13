@@ -224,7 +224,7 @@ serverRate                     = 1/5;       % 5 Hz
 
 Phase0_Duration                = 5;        % [s]
 Phase1_Duration                = 5;         % [s]
-Phase2_Duration                = 25;        % [s]
+Phase2_Duration                = 5;        % [s]
 Phase3_Duration                = 60;        % [s]
 Phase4_Duration                = 20;        % [s]
 Phase5_Duration                = 5;         % [s]
