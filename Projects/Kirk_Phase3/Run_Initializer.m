@@ -276,10 +276,10 @@ Phase3_SubPhase4_End           = Phase2_End + Phase3_SubPhase1_Duration + ...
 
 % Define the mass properties for the RED, BLACK, and BLUE platforms:
 
-model_param(1)                 = 16.9478; % RED Mass
-model_param(2)                 = 0.2709;  % RED Inertia;
-model_param(3)                 = 12.3341; % BLACK Mass
-model_param(4)                 = 0.1880;  % BLACK Inertia
+model_param(1)                 = 11.211000; % RED Mass
+model_param(2)                 = 0.202150; % RED Inertia
+model_param(3)                 = 12.039000; % BLACK Mass
+model_param(4)                 = 0.225692; % BLACK Inertia
 model_param(5)                 = 12.7621; % BLUE Mass
 model_param(6)                 = 0.1930;  % BLUE Inertia
 
@@ -290,8 +290,8 @@ model_param(6)                 = 0.1930;  % BLUE Inertia
 F_thrusters_RED               = 0.25.*ones(8,1);
 F_thrusters_BLACK             = 0.25.*ones(8,1);
 F_thrusters_BLUE              = 0.25.*ones(8,1);
-thruster_dist2CG_RED          = [49.92;-78.08;70.46;-63.54;81.08;-50.42;57.44;-75.96];
-thruster_dist2CG_BLACK        = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-55.94];
+thruster_dist2CG_RED          = [69.38;-56.62;50.01;-81.49;61.12;-68.38;78.99;-52.01];
+thruster_dist2CG_BLACK        = [72.80;-65.20;61.75;-79.75;65.20;-65.20;74.25;-54.75];
 thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-55.94];
 
 
