@@ -59,12 +59,13 @@ wrist_max_omega = 30*pi/180; % [rad/s]
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
 bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm to rest after capture
 
-% Velocity PI controller gains
-Kp_vel_PI = 40; %50
-KI_vel_PI = 0; %0 
+% Velocity PI controller gains (commented because this controller isn't
+% used as of July 13, 2021--feedforward instead).
+%Kp_vel_PI = 40; %50
+%KI_vel_PI = 0; %0 
 
-Kp_vel_PI_theta = 0.6;
-KI_vel_PI_theta = 0;
+%Kp_vel_PI_theta = 0.6;
+%KI_vel_PI_theta = 0;
 
 
 % Loading in mass properties from the relevant Python environment for use in the feedforward controller
@@ -208,7 +209,7 @@ noise_variance_BLUE            = 0;
 % folder, and change line 204 from owl.frequency(10) to 
 % owl.frequency(serverRate):
 
-baseRate                       = 1/20;      % 10 Hz
+baseRate                       = 1/10;      % 10 Hz
 
 %% Set the frequency that the data is being sent up from the PhaseSpace:
 
@@ -217,7 +218,7 @@ baseRate                       = 1/20;      % 10 Hz
 % setting this equal to or higher then the baseRate causes the data to
 % buffer in the UDP send.
 
-serverRate                     = 1/10;       % 5 Hz
+serverRate                     = 1/5;       % 5 Hz
 
 %% Set the duration of each major phase in the experiment, in seconds:
 
