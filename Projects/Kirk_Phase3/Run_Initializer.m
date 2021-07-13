@@ -288,9 +288,9 @@ model_param(6)                 = 0.1930;  % BLUE Inertia
 % as well as the expected maximum forces. The expected forces will only 
 % affect the simulations.
 
-F_thrusters_RED               = 0.25.*ones(8,1);
-F_thrusters_BLACK             = 0.25.*ones(8,1);
-F_thrusters_BLUE              = 0.25.*ones(8,1);
+F_thrusters_RED               = 0.183.*ones(8,1);
+F_thrusters_BLACK             = 0.183.*ones(8,1);
+F_thrusters_BLUE              = 0.183.*ones(8,1);
 thruster_dist2CG_RED          = [69.38;-56.62;50.01;-81.49;61.12;-68.38;78.99;-52.01];
 thruster_dist2CG_BLACK        = [72.80;-65.20;61.75;-79.75;65.20;-65.20;74.25;-54.75];
 thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-55.94];
