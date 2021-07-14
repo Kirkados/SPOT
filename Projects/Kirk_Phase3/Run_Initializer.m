@@ -224,7 +224,7 @@ serverRate                     = 1/5;       % 5 Hz
 
 Phase0_Duration                = 5;        % [s]
 Phase1_Duration                = 5;         % [s]
-Phase2_Duration                = 5;        % [s]
+Phase2_Duration                = 25;        % [s]
 Phase3_Duration                = 60;        % [s]
 Phase4_Duration                = 20;        % [s]
 Phase5_Duration                = 5;         % [s]
@@ -285,8 +285,7 @@ model_param(5)                 = 12.7621; % BLUE Mass
 model_param(6)                 = 0.1930;  % BLUE Inertia
 
 % Initialize the thruster positions for the RED, BLACK, and BLUE platforms,
-% as well as the expected maximum forces. The expected forces will only 
-% affect the simulations.
+% as well as the expected maximum forces.
 
 F_thrusters_RED               = 0.183.*ones(8,1);
 F_thrusters_BLACK             = 0.183.*ones(8,1);
