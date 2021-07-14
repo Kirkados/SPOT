@@ -46,7 +46,7 @@ HARD_CODE_TARGET_SPIN_TO_ZERO = True
 ###############################
 ### User-defined parameters ###
 ###############################
-offset_x = -0.01 # Position offset of the target in its body frame
+offset_x = 0.0 # Position offset of the target in its body frame
 offset_y = 0.0 # Position offset of the target in its body frame
 offset_angle = 0 # Angle offset of the target in its body frame
 
