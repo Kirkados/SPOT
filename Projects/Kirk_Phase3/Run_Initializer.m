@@ -287,7 +287,16 @@ model_param(6)                 = 0.1930;  % BLUE Inertia
 % Initialize the thruster positions for the RED, BLACK, and BLUE platforms,
 % as well as the expected maximum forces.
 
-F_thrusters_RED               = 0.183.*ones(8,1);
+%F_thrusters_RED               = 0.183.*ones(8,1);
+F_red_X_nominal = 0.2196; % [N] nominal thrust with only 2 or less thrusters firing
+F_red_Y_nominal = 0.2825; % [N] nominal thrust with only 2 or less thrusters firing
+F_thrusters_RED  = [F_red_X_nominal; F_red_X_nominal; F_red_Y_nominal; F_red_Y_nominal; F_red_X_nominal; F_red_X_nominal; F_red_Y_nominal; F_red_Y_nominal];
+thruster_count_threshold = 0.15; % how much duty cycle is needed to count this thruster as on (to the point where it disrupts thrust to other thrusters)
+thrusters_on_X_RED = [0,1,2,3,4];
+thruster_strengths_X_RED = [1,1, 1, 0.7, 0.7]; % [fraction of nominal thrust] corresponding to above number of thrusters
+thrusters_on_Y_RED = [0,1,2,3,4];
+thruster_strengths_Y_RED = [1, 1, 1, 0.7, 0.7]; % [fraction of nominal thrust] corresponding to above number of thrusters
+
 F_thrusters_BLACK             = 0.183.*ones(8,1);
 F_thrusters_BLUE              = 0.183.*ones(8,1);
 thruster_dist2CG_RED          = [69.38;-56.62;50.01;-81.49;61.12;-68.38;78.99;-52.01];
