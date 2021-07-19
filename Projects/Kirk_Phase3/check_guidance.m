@@ -10,21 +10,22 @@ plot(rt_dataPacket(:,1),rt_dataPacket(:,65))
 hold on;
 plot(rt_dataPacket(:,1),rt_dataPacket(:,71))
 yyaxis right
-plot(rt_dataPacket(:,1),rt_dataPacket(:,91))
-plot(rt_dataPacket(:,1),rt_dataPacket(:,92))
+%plot(rt_dataPacket(:,1),rt_dataPacket(:,91))
+%plot(rt_dataPacket(:,1),rt_dataPacket(:,92))
 legend('Accel X command', 'True Ax','Thrusters On','Thruster sum')
-
+yyaxis left
 
 figure()
 plot(rt_dataPacket(:,1),rt_dataPacket(:,66))
 hold on;
 plot(rt_dataPacket(:,1),rt_dataPacket(:,72))
 yyaxis right
-plot(rt_dataPacket(:,1),rt_dataPacket(:,91))
-plot(rt_dataPacket(:,1),rt_dataPacket(:,92))
+%plot(rt_dataPacket(:,1),rt_dataPacket(:,91))
+%plot(rt_dataPacket(:,1),rt_dataPacket(:,92))
 %plot(rt_dataPacket(:,1),rt_dataPacket(:,3))
 %plot(rt_dataPacket(:,1),rt_dataPacket(:,89))
 legend('Accel Y command', 'True Ay', 'Thrusters on','Thruster sum')
+yyaxis left
 
 figure()
 plot(rt_dataPacket(:,1),rt_dataPacket(:,67))

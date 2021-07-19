@@ -292,10 +292,11 @@ F_red_X_nominal = 0.2196; % [N] nominal thrust with only 2 or less thrusters fir
 F_red_Y_nominal = 0.2825; % [N] nominal thrust with only 2 or less thrusters firing
 F_thrusters_RED  = [F_red_X_nominal; F_red_X_nominal; F_red_Y_nominal; F_red_Y_nominal; F_red_X_nominal; F_red_X_nominal; F_red_Y_nominal; F_red_Y_nominal];
 thruster_count_threshold = 0.0; % how much duty cycle is needed to count this thruster as on (to the point where it disrupts thrust to other thrusters)
-thrusters_on_X_RED       = [0, 1, 2,   3,   4];
-thruster_strengths_X_RED = [1, 1, 1, 1, 1]; % [fraction of nominal thrust] corresponding to above number of thrusters; used to be [1,1,1,0.7,0.7]
-thrusters_on_Y_RED =       [0, 1, 2,   3,   4];
-thruster_strengths_Y_RED = [1, 1, 1, 1, 1]; % [fraction of nominal thrust] corresponding to above number of thrusters; used to be [1,1,1,0.7,0.7]
+%thrusters_on_X_RED       = [0, 1, 2,   3,   4];
+%thruster_strengths_X_RED = [1, 1, 1, 1, 1]; % [fraction of nominal thrust] corresponding to above number of thrusters; used to be [1,1,1,0.7,0.7]
+%thrusters_on_Y_RED =       [0, 1, 2,   3,   4];
+%thruster_strengths_Y_RED = [1, 1, 1, 1, 1]; % [fraction of nominal thrust] corresponding to above number of thrusters; used to be [1,1,1,0.7,0.7]
+
 
 F_thrusters_BLACK             = 0.183.*ones(8,1);
 F_thrusters_BLUE              = 0.183.*ones(8,1);
