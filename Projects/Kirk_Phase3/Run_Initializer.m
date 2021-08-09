@@ -236,7 +236,7 @@ serverRate                     = 1/10;       % 10 Hz
 Phase0_Duration                = 5;        % [s]
 Phase1_Duration                = 5;         % [s]
 Phase2_Duration                = 25;        % [s]
-Phase3_Duration                = 600;        % [s]
+Phase3_Duration                = 60;        % [s]
 Phase4_Duration                = 20;        % [s]
 Phase5_Duration                = 5;         % [s]
 
@@ -248,7 +248,7 @@ Phase5_Duration                = 5;         % [s]
 Phase3_SubPhase1_Duration      = 0;        % [s]
 Phase3_SubPhase2_Duration      = 0;        % [s]
 Phase3_SubPhase3_Duration      = 0;        % [s]
-Phase3_SubPhase4_Duration      = 600       % [s]
+Phase3_SubPhase4_Duration      = 60;       % [s]
 
 % Determine the total experiment time from the durations:
 
