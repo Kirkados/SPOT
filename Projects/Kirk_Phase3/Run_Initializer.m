@@ -34,7 +34,7 @@ fprintf('|----------------------------------------------------------------|\n')
 %% User-defined constants:
 
 % The folder name of the model used (where the physical parameters will be pulled from)
-model_folder = '7day_newProperties_newthrust_DECAY1_a02_alpha05_nospin_beluga-2021-07-23_22-40'
+model_folder = '9day_newProperties_newthrust_DECAY1_a02_alpha05_spin_rcdc-2021-07-22_11-35'
 
 % Arm initial conditions (only used when running Set_arm_angles)
 initial_shoulder_angle = 0*pi/180; % [rad]
@@ -42,7 +42,7 @@ initial_elbow_angle = 0*pi/180; % [rad]
 initial_wrist_angle = 0*pi/180; % [rad]
 
 % Target parameters
-target_angular_velocity = 0.;
+target_angular_velocity = 5*pi/180;
 target_starting_angle = 0; % [rad] -> tune this for fairness
 
 % Arm limit and post-capture parameters
