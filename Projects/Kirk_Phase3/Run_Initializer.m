@@ -34,7 +34,7 @@ fprintf('|----------------------------------------------------------------|\n')
 %% User-defined constants:
 
 % The folder name of the model used (where the physical parameters will be pulled from)
-model_folder = 'inertialAcceleration_noSpin_lowRandomization_highVel_rcdc-2021-06-15_16-27';
+model_folder = '7day_newProperties_newthrust_DECAY1_a02_alpha05_nospin_beluga-2021-07-23_22-40'
 
 % Arm initial conditions (only used when running Set_arm_angles)
 initial_shoulder_angle = 0*pi/180; % [rad]
@@ -44,16 +44,6 @@ initial_wrist_angle = 0*pi/180; % [rad]
 % Target parameters
 target_angular_velocity = 0.;
 target_starting_angle = 0; % [rad] -> tune this for fairness
-
-% Body speed limit parameters
-max_x_velocity = 0.1; % [m/s]
-max_y_velocity = 0.1; % [m/s]
-max_body_omega = 15*pi/180; % [rad/s]
-
-% Arm speed limit parameters
-shoulder_max_omega = 30*pi/180; % [rad/s]
-elbow_max_omega = 30*pi/180; % [rad/s]
-wrist_max_omega = 30*pi/180; % [rad/s]
 
 % Arm limit and post-capture parameters
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
@@ -71,6 +61,27 @@ bring_arm_to_rest_time = 3; % [s] how long to spend gradually bringing the arm t
 % Loading in mass properties from the relevant Python environment for use in the feedforward controller
 fileID = fopen(strcat('Guidance Models/', model_folder, '/code/environment_manipulator.py'));
 environment_file = fscanf(fileID,'%s');
+
+% Body speed limit parameters
+value = 'self.MAX_VELOCITY';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+max_x_velocity = str2double(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2));
+max_y_velocity = max_x_velocity;
+
+value = 'self.MAX_BODY_ANGULAR_VELOCITY';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+max_body_omega = str2num(erase(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2),'np.'));
+
+% Arm speed limit parameters
+value = 'self.MAX_ARM_ANGULAR_VELOCITY';
+search_start = strfind(environment_file,value);
+search_end = strfind(environment_file(search_start(1):end),'#');
+shoulder_max_omega = str2num(erase(environment_file(search_start(1)+length(value)+1:search_start(1)+search_end(1)-2),'np.'));
+elbow_max_omega = shoulder_max_omega; % [rad/s]
+wrist_max_omega = shoulder_max_omega; % [rad/s]
+
 
 value = 'self.PHI';
 search_start = strfind(environment_file,value);
@@ -225,7 +236,7 @@ serverRate                     = 1/10;       % 10 Hz
 Phase0_Duration                = 5;        % [s]
 Phase1_Duration                = 5;         % [s]
 Phase2_Duration                = 25;        % [s]
-Phase3_Duration                = 60;        % [s]
+Phase3_Duration                = 600;        % [s]
 Phase4_Duration                = 20;        % [s]
 Phase5_Duration                = 5;         % [s]
 
@@ -237,7 +248,7 @@ Phase5_Duration                = 5;         % [s]
 Phase3_SubPhase1_Duration      = 0;        % [s]
 Phase3_SubPhase2_Duration      = 0;        % [s]
 Phase3_SubPhase3_Duration      = 0;        % [s]
-Phase3_SubPhase4_Duration      = 60;       % [s]
+Phase3_SubPhase4_Duration      = 600       % [s]
 
 % Determine the total experiment time from the durations:
 
