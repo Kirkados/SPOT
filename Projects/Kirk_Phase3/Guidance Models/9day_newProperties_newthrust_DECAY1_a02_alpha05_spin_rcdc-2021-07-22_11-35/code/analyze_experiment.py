@@ -35,7 +35,7 @@ display.start()
 #####################################
 ### Load in the experimental data ###
 #####################################
-log_filename = glob.glob('*46-55.txt')[0]
+log_filename = glob.glob('*31-31.txt')[0]
 data = np.load(log_filename)
 print("Data file %s is loaded" %log_filename)
 os.makedirs(log_filename.split('.')[0], exist_ok=True)
