@@ -36,14 +36,7 @@ fprintf('|----------------------------------------------------------------|\n')
 % The folder name of the model used (where the physical parameters will be pulled from)
 model_folder = '9day_newProperties_newthrust_DECAY1_a02_alpha05_spin_rcdc-2021-07-22_11-35'
 
-% Arm initial conditions (only used when running Set_arm_angles)
-initial_shoulder_angle = 0*pi/180; % [rad]
-initial_elbow_angle = 0*pi/180; % [rad]
-initial_wrist_angle = 0*pi/180; % [rad]
-
-% Target parameters
-target_angular_velocity = 5*pi/180;
-target_starting_angle = 0; % [rad] -> tune this for fairness
+initial_condition_number = 3 % [1, 2, or 3] describing the three initial conditions being tested (defined at line 312)
 
 % Arm limit and post-capture parameters
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
@@ -318,18 +311,75 @@ thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-5
 
 %%  Set the drop, initial, and home positions for each platform:
 
+if initial_condition_number == 1
 
-drop_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
-drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
-drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
+    % Arm initial conditions (only used when running Set_arm_angles)
+    initial_shoulder_angle = 0*pi/180; % [rad]
+    initial_elbow_angle = 0*pi/180; % [rad]
+    initial_wrist_angle = 0*pi/180; % [rad]
 
-init_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
-init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
-init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
+    % Target parameters
+    target_angular_velocity = 5*pi/180;
+    target_starting_angle = 0;
 
-home_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
-home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
-home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
+    drop_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
+    drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
+    drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
+
+    init_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
+    init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
+    init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
+
+    home_states_RED           = [ 1.16; 1.2; 0]; % [m; m; rad]
+    home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
+    home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
+
+elseif initial_condition_number == 2
+    
+    % Arm initial conditions (only used when running Set_arm_angles)
+    initial_shoulder_angle = pi/3; % [rad]
+    initial_elbow_angle = -pi/4; % [rad]
+    initial_wrist_angle = -pi/3; % [rad]
+
+    % Target parameters
+    target_angular_velocity = 10*pi/180;
+    target_starting_angle = -pi;
+
+    drop_states_RED           = [ 1.16; 1.2; pi]; % [m; m; rad]
+    drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
+    drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
+
+    init_states_RED           = [ 1.16; 1.2; pi]; % [m; m; rad]
+    init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
+    init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
+
+    home_states_RED           = [ 1.16; 1.2; pi]; % [m; m; rad]
+    home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
+    home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
+   
+elseif initial_condition_number == 3
+        
+    % Arm initial conditions (only used when running Set_arm_angles)
+    initial_shoulder_angle = pi/2; % [rad]
+    initial_elbow_angle = pi/2; % [rad]
+    initial_wrist_angle = 0; % [rad]
+
+    % Target parameters
+    target_angular_velocity = -7*pi/180;
+    target_starting_angle = pi;
+
+    drop_states_RED           = [ 0.6; 1.9; pi/2]; % [m; m; rad]
+    drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
+    drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
+
+    init_states_RED           = [ 0.6; 1.9; pi/2]; % [m; m; rad]
+    init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
+    init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
+
+    home_states_RED           = [ 0.6; 1.9; pi/2]; % [m; m; rad]
+    home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
+    home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
+end
                                               
 %% Start the graphical user interface:
 
