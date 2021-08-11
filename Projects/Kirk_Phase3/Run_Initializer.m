@@ -349,7 +349,9 @@ elseif initial_condition_number == 2
     drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
     drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
+    % Change this if re-calibrating phasespace doesn't help
     init_states_RED           = [ 1.16; 1.2; pi]; % [m; m; rad]
+    
     init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
     init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
@@ -366,6 +368,8 @@ elseif initial_condition_number == 3
 
     % Target parameters
     target_angular_velocity = -7*pi/180;
+    
+    % Tweak this to find one that has a reasonable capture
     target_starting_angle = pi;
 
     drop_states_RED           = [ 0.6; 1.9; pi/2]; % [m; m; rad]
