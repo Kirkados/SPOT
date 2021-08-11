@@ -36,7 +36,7 @@ fprintf('|----------------------------------------------------------------|\n')
 % The folder name of the model used (where the physical parameters will be pulled from)
 model_folder = '9day_newProperties_newthrust_DECAY1_a02_alpha05_spin_rcdc-2021-07-22_11-35'
 
-initial_condition_number = 3 % [1, 2, or 3] describing the three initial conditions being tested (defined at line 312)
+initial_condition_number = 2 % [1, 2, or 3] describing the three initial conditions being tested (defined at line 312)
 
 % Arm limit and post-capture parameters
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
@@ -343,19 +343,19 @@ elseif initial_condition_number == 2
 
     % Target parameters
     target_angular_velocity = 10*pi/180;
-    target_starting_angle = -pi;
+    target_starting_angle = -pi/2;
 
-    drop_states_RED           = [ 1.16; 1.2; pi]; % [m; m; rad]
+    drop_states_RED           = [ 1.16; 0.6; pi]; % [m; m; rad]
     drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
     drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
     % Change this if re-calibrating phasespace doesn't help
-    init_states_RED           = [ 1.16; 1.2; pi]; % [m; m; rad]
+    init_states_RED           = [ 1.16; 0.6; pi]; % [m; m; rad]
     
     init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
     init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
-    home_states_RED           = [ 1.16; 1.2; pi]; % [m; m; rad]
+    home_states_RED           = [ 1.16; 0.6; pi]; % [m; m; rad]
     home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
     home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
    
