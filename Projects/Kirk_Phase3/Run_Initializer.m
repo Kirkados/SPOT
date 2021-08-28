@@ -313,9 +313,10 @@ thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-5
 
 if initial_condition_number == 1
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% INITIAL CONDITION 1 IS COMPLETE AND REPEATABLE %%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% INITIAL CONDITION 2 IS COMPLETE AND REPEATABLE         %%% 
+    %%% Note: Target angular rate is not hard-coded in python! %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Arm initial conditions (only used when running Set_arm_angles)
     initial_shoulder_angle = 0*pi/180; % [rad]
@@ -340,9 +341,10 @@ if initial_condition_number == 1
 
 elseif initial_condition_number == 2
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% INITIAL CONDITION 2 IS COMPLETE AND REPEATABLE %%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% INITIAL CONDITION 2 IS COMPLETE AND REPEATABLE         %%% 
+    %%% Note: Target angular rate is not hard-coded in python! %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Arm initial conditions (only used when running Set_arm_angles)
     initial_shoulder_angle = pi/3; % [rad]
@@ -369,9 +371,10 @@ elseif initial_condition_number == 2
    
 elseif initial_condition_number == 3
     
-    %%%%%%%%%%%%%%%%%%
-    %%% INCOMPLETE %%%
-    %%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% INITIAL CONDITION 3 IS COMPLETE AND REPEATABLE         %%% 
+    %%% Note: Target angular rate is not hard-coded in python! %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
     % Arm initial conditions (only used when running Set_arm_angles)
     initial_shoulder_angle = pi/2; % [rad]
@@ -379,18 +382,18 @@ elseif initial_condition_number == 3
     initial_wrist_angle = 0; % [rad]
 
     % Target parameters
-    target_angular_velocity = -7*pi/180;
-    target_starting_angle = pi;
+    target_angular_velocity = -5*pi/180;
+    target_starting_angle =  -100*pi/180 - target_angular_velocity*Phase2_Duration; % The angle is the desired one at the beginning of Phase 3
 
-    drop_states_RED           = [ 0.6; 1.9; pi/4]; % [m; m; rad]
+    drop_states_RED           = [ 0.5; 0.8; pi/4]; % [m; m; rad]
     drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
     drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
-    init_states_RED           = [ 0.6; 1.9; pi/4]; % [m; m; rad]
+    init_states_RED           = [ 0.5; 0.8; pi/4]; % [m; m; rad]
     init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
     init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
-    home_states_RED           = [ 0.6; 1.9; pi/4]; % [m; m; rad]
+    home_states_RED           = [ 0.5; 0.8; pi/4]; % [m; m; rad]
     home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
     home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
 end
