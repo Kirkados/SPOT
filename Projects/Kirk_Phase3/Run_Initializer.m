@@ -36,7 +36,7 @@ fprintf('|----------------------------------------------------------------|\n')
 % The folder name of the model used (where the physical parameters will be pulled from)
 model_folder = '9day_newProperties_newthrust_DECAY1_a02_alpha05_spin_rcdc-2021-07-22_11-35'
 
-initial_condition_number = 2 % [1, 2, or 3] describing the three initial conditions being tested (defined at line 312)
+initial_condition_number = 3 % [1, 2, or 3] describing the three initial conditions being tested (defined at line 312)
 
 % Arm limit and post-capture parameters
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
