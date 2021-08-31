@@ -36,7 +36,7 @@ fprintf('|----------------------------------------------------------------|\n')
 % The folder name of the model used (where the physical parameters will be pulled from)
 model_folder = '9day_newProperties_newthrust_DECAY1_a02_alpha05_spin_rcdc-2021-07-22_11-35'
 
-initial_condition_number = 3 % [1, 2, or 3] describing the three initial conditions being tested (defined at line 312)
+initial_condition_number = 2 % [1, 2, or 3] describing the three initial conditions being tested (defined at line 312)
 
 % Arm limit and post-capture parameters
 joint_limit_buffer_angle = 0; % [deg] how early the arm will try and stop before reading 90 deg
@@ -372,7 +372,7 @@ elseif initial_condition_number == 2
 elseif initial_condition_number == 3
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% INITIAL CONDITION 3 IS COMPLETE AND REPEATABLE         %%% 
+    %%% INITIAL CONDITION 3 IS COMPLETE AND not REPEATABLE     %%% 
     %%% Note: Target angular rate is not hard-coded in python! %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -385,15 +385,17 @@ elseif initial_condition_number == 3
     target_angular_velocity = -5*pi/180;
     target_starting_angle =  -100*pi/180 - target_angular_velocity*Phase2_Duration; % The angle is the desired one at the beginning of Phase 3
 
-    drop_states_RED           = [ 0.5; 0.8; pi/4]; % [m; m; rad]
+    %drop_states_RED           = [ 0.5; 0.8; pi/4]; % [m; m; rad] v1
+    drop_states_RED           = [ 0.5; 1.6; pi/4]; % [m; m; rad] v2
+    %drop_states_RED           = [ 2.0; 2.0; pi/4]; % [m; m; rad] v3
     drop_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
     drop_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];         % [m; m; rad]
 
-    init_states_RED           = [ 0.5; 0.8; pi/4]; % [m; m; rad]
+    init_states_RED           = drop_states_RED;
     init_states_BLACK         = [ 2.33; 1.2; target_starting_angle];      % [m; m; rad]
     init_states_BLUE          = [ xLength/2+0.9; yLength/2+0.5; 0];      % [m; m; rad]
 
-    home_states_RED           = [ 0.5; 0.8; pi/4]; % [m; m; rad]
+    home_states_RED           = drop_states_RED;
     home_states_BLACK         = [ 2.33; 1.2; target_starting_angle];  % [m; m; rad]
     home_states_BLUE          = [ xLength/2-0.9; yLength/2+0.5; 0];  % [m; m; rad]
 end
