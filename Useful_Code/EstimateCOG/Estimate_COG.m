@@ -108,6 +108,7 @@ docking_port_y = 0.15-Yb+0.075;
 
 fprintf('\nBlack''s docking port is %.4f m in X and %.4f m in Y from its centre of mass.\n', [docking_port_x,docking_port_y]);
 
+return
                        
 % Black complete; Red next
 

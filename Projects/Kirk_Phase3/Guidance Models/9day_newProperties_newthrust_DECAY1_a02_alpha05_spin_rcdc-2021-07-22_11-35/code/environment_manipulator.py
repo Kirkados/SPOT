@@ -207,14 +207,14 @@ class Environment:
         self.B2       = 0.106348 # [m] centre of mass to end of link
         self.A3       = 0.062097 # [m] base of link to centre of mass
         self.B3       = 0.025153 # [m] centre of mass to end of link
-        self.INERTIA  = 0.202150 # [kg m^2] from Crain and Ulrich
-        self.INERTIA1 = 0.003704 # [kg m^2] from Crain and Ulrich
-        self.INERTIA2 = 0.003506 # [kg m^2] from Crain and Ulrich       
-        self.INERTIA3 = 0.000106 # [kg m^2] from Crain and Ulrich
+        self.INERTIA  = 0.202150 # [kg m^2] measured by Kirk July 2021
+        self.INERTIA1 = 0.003704 # [kg m^2] measured by Kirk July 2021
+        self.INERTIA2 = 0.003506 # [kg m^2] measured by Kirk July 2021       
+        self.INERTIA3 = 0.000106 # [kg m^2] measured by Kirk July 2021
         
         # Target Physical Properties
         self.TARGET_MASS = 12.0390 # [kg]
-        self.TARGET_INERTIA = 0.225692 # [kg m^2 theoretical]
+        self.TARGET_INERTIA = 0.225692 # 
         
         # Platform physical properties        
         self.LENGTH_RANDOMIZATION          = 0.1 # [m] standard deviation of the LENGTH randomization when domain randomization is performed.        
