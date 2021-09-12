@@ -314,7 +314,7 @@ thruster_dist2CG_BLUE         = [83.42;-52.58;55.94;-60.05;54.08;-53.92;77.06;-5
 if initial_condition_number == 1
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% INITIAL CONDITION 2 IS COMPLETE AND REPEATABLE         %%% 
+    %%% INITIAL CONDITION 1 IS COMPLETE AND REPEATABLE         %%% 
     %%% Note: Target angular rate is not hard-coded in python! %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
